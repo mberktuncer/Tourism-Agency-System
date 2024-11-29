@@ -56,8 +56,52 @@ public class UserService {
 
     }
 
+    public static User getUserByUserName(String userName){
+        String query = "SELECT * FROM users WHERE userName = ?";
+        User user = null;
+
+        try (Connection ignored = Config.connect()){
+            PreparedStatement preparedStatement = Config.connect().prepareStatement(query);
+            preparedStatement.setString(1, userName);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                user = new User();
+                user.setId(resultSet.getInt("id"));
+                user.setName(resultSet.getString("name"));
+                user.setSurname(resultSet.getString("surname"));
+                user.setUserName(resultSet.getString("username"));
+                user.setPassword("password");
+                user.setRole("role");
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return user;
+
+    }
+
     public static boolean add(String name, String surname, String userName, String password, String role){
-        String query = "INSERT INTO users (name, surname, username, password, role) VALUES (?, ?, ?, ?, ?)";
-        return true;
+        String query = "INSERT INTO users (name, surname, username, password, role) VALUES (?, ?, ?, ?, ?::user_role)";
+        User user = getUserByUserName(userName);
+        if (user != null){
+            return false;
+        }
+        try{
+            PreparedStatement preparedStatement = Config.connect().prepareStatement(query);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, surname);
+            preparedStatement.setString(3, userName);
+            preparedStatement.setString(4, password);
+            preparedStatement.setString(5, role);
+            int result = preparedStatement.executeUpdate();
+            System.out.println("Rows affected: " + result);
+            return result == 1;
+
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+
+        return false;
     }
 }
