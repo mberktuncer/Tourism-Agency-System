@@ -3,6 +3,7 @@ package main;
 import main.helper.Config;
 import main.model.User;
 import main.service.UserService;
+import main.ui.AdminGUI;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -12,8 +13,6 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-
-        UserService.add("Berk", "Tuncer", "thetestere", "123", "admin");
 
 
     }
