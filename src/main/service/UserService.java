@@ -152,4 +152,16 @@ public class UserService {
 
     }
 
+    public static boolean deleteById(int id){
+        String query = "DELETE FROM users WHERE id = ?";
+        try(Connection ignored = Config.connect()){
+            PreparedStatement preparedStatement = Config.connect().prepareStatement(query);
+            preparedStatement.setInt(1, id);
+            return preparedStatement.executeUpdate() == 1;
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

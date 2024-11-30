@@ -4,6 +4,7 @@ import main.helper.Constants;
 import main.helper.GUIHelper;
 import main.model.User;
 import main.service.UserService;
+import org.w3c.dom.html.HTMLBRElement;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -48,6 +49,7 @@ public class AdminGUI extends JFrame {
         tbl_user_list.setModel(mdl_user_list);
         tbl_user_list.getTableHeader().setReorderingAllowed(false);
 
+
     }
 
     private void loadUserModel(String roleFilter){
@@ -73,7 +75,6 @@ public class AdminGUI extends JFrame {
             mdl_user_list.addRow(row_user_list);
         }
     }
-
 
     private void initializeGUI() {
         add(wrapper);
@@ -123,6 +124,34 @@ public class AdminGUI extends JFrame {
         btn_listbyrole_user.addActionListener(e -> {
             String role = cmb_search_user_role.getSelectedItem().toString();
             loadUserModel(role);
+        });
+
+        tbl_user_list.getSelectionModel().addListSelectionListener(e -> {
+            try{
+                String selectedRowUserId = tbl_user_list.getValueAt(tbl_user_list.getSelectedRow(), 0).toString();
+                fld_delete_id.setText(selectedRowUserId);
+            }catch (Exception exception){
+                System.out.println(exception.getMessage());
+            }
+        });
+
+        btn_delete.addActionListener(e -> {
+            if (GUIHelper.isFieldEmpty(fld_delete_id)){
+                GUIHelper.showMessage(Constants.MSG_FILL);
+            }
+            else{
+                if (GUIHelper.confirm(Constants.MSG_SURE)){
+                    int userId = Integer.parseInt(fld_delete_id.getText());
+                    if (UserService.deleteById(userId)){
+                        GUIHelper.showMessage(Constants.MSG_DONE);
+                        loadUserModel(Constants.ROLES_ALL);
+                        fld_delete_id.setText(null);
+                    }
+                }
+                else{
+                    GUIHelper.showMessage(Constants.MSG_ERROR);
+                }
+            }
         });
 
     }
