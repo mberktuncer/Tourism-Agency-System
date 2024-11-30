@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Objects;
 
 public class AdminGUI extends JFrame {
     private JPanel wrapper;
@@ -42,20 +43,27 @@ public class AdminGUI extends JFrame {
         Object[] columnUserList = {"Id", "Name", "Surname", "User Name", "Role"};
         mdl_user_list.setColumnIdentifiers(columnUserList);
         row_user_list = new Object[columnUserList.length];
-        loadUserModel();
+        loadUserModel(Constants.ROLES_ALL);
 
         tbl_user_list.setModel(mdl_user_list);
         tbl_user_list.getTableHeader().setReorderingAllowed(false);
 
-
-
     }
 
-    private void loadUserModel(){
+    private void loadUserModel(String roleFilter){
         DefaultTableModel clearModel = (DefaultTableModel) tbl_user_list.getModel();
         clearModel.setRowCount(0);
 
-        for (User user : UserService.listAll()){
+        List<User> users;
+
+        if (roleFilter == null || roleFilter.equals("All Roles")){
+            users = UserService.listAll();
+        }
+        else {
+            users = UserService.getUsersByRole(roleFilter);
+        }
+
+        for (User user : users){
             int i = 0;
             row_user_list[i++] = user.getId();
             row_user_list[i++] = user.getName();
@@ -66,20 +74,6 @@ public class AdminGUI extends JFrame {
         }
     }
 
-    private void loadUserModelByRole(){
-        DefaultTableModel clearModel = (DefaultTableModel) tbl_user_list.getModel();
-        clearModel.setRowCount(0);
-
-        for (User user : UserService.getUsersByRole(cmb_search_user_role.getSelectedItem().toString())){
-            int i = 0;
-            row_user_list[i++] = user.getId();
-            row_user_list[i++] = user.getName();
-            row_user_list[i++] = user.getSurname();
-            row_user_list[i++] = user.getUserName();
-            row_user_list[i++] = user.getRole();
-            mdl_user_list.addRow(row_user_list);
-        }
-    }
 
     private void initializeGUI() {
         add(wrapper);
@@ -91,6 +85,7 @@ public class AdminGUI extends JFrame {
     }
 
     private void populateRoles() {
+        cmb_search_user_role.addItem(Constants.ROLES_ALL);
         List<String> roles = UserService.getUserRoles();
         for (String role : roles) {
             cmb_role.addItem(role);
@@ -116,7 +111,7 @@ public class AdminGUI extends JFrame {
                 java.util.Arrays.fill(password, '\0');
                 if (UserService.add(name, surname, userName, passwordString, role)){
                     GUIHelper.showMessage(Constants.MSG_DONE);
-                    loadUserModel();
+                    loadUserModel(Constants.ROLES_ALL);
                     fld_name.setText(null);
                     fld_surname.setText(null);
                     fld_username.setText(null);
@@ -126,10 +121,10 @@ public class AdminGUI extends JFrame {
         });
 
         btn_listbyrole_user.addActionListener(e -> {
-            String role = cmb_role.getSelectedItem().toString();
-            UserService.getUsersByRole(role);
-            loadUserModelByRole();
+            String role = cmb_search_user_role.getSelectedItem().toString();
+            loadUserModel(role);
         });
+
     }
 
     public static void main(String[] args) {
