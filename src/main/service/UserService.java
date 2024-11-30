@@ -1,6 +1,7 @@
 package main.service;
 
 import main.helper.Config;
+import main.helper.GUIHelper;
 import main.model.User;
 
 import javax.sound.midi.Soundbank;
@@ -8,6 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class UserService {
 
@@ -152,6 +154,26 @@ public class UserService {
 
     }
 
+    public static boolean update(String name, String surname, String userName, String role){
+        String query = "UPDATE users SET name = ?, surname = ?, username = ?, role = ? WHERE username = ?";
+        User user = getUserByUserName(userName);
+        if (user != null && !Objects.equals(user.getUserName(), userName)){
+            GUIHelper.showMessage("This username has been used before");
+            return false;
+        }
+        try(Connection ignored = Config.connect()){
+            PreparedStatement preparedStatement = Config.connect().prepareStatement(query);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, surname);
+            preparedStatement.setString(3, userName);
+            preparedStatement.setString(4, role);
+            return preparedStatement.executeUpdate() == 1;
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
     public static boolean deleteById(int id){
         String query = "DELETE FROM users WHERE id = ?";
         try(Connection ignored = Config.connect()){
@@ -163,5 +185,6 @@ public class UserService {
         }
         return false;
     }
+
 
 }
