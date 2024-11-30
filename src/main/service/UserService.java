@@ -3,8 +3,11 @@ package main.service;
 import main.helper.Config;
 import main.model.User;
 
+import javax.sound.midi.Soundbank;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class UserService {
 
@@ -21,8 +24,8 @@ public class UserService {
                 user.setName(resultSet.getString("name"));
                 user.setSurname(resultSet.getString("surname"));
                 user.setUserName(resultSet.getString("username"));
-                user.setPassword("password");
-                user.setRole("role");
+                user.setPassword(resultSet.getString("password"));
+                user.setRole(resultSet.getString("role"));
                 users.add(user);
             }
         }catch (SQLException e){
@@ -45,8 +48,8 @@ public class UserService {
                 user.setName(resultSet.getString("name"));
                 user.setSurname(resultSet.getString("surname"));
                 user.setUserName(resultSet.getString("username"));
-                user.setPassword("password");
-                user.setRole("role");
+                user.setPassword(resultSet.getString("password"));
+                user.setRole(resultSet.getString("role"));
             }
         }catch (SQLException e){
             e.printStackTrace();
@@ -70,8 +73,8 @@ public class UserService {
                 user.setName(resultSet.getString("name"));
                 user.setSurname(resultSet.getString("surname"));
                 user.setUserName(resultSet.getString("username"));
-                user.setPassword("password");
-                user.setRole("role");
+                user.setPassword(resultSet.getString("password"));
+                user.setRole(resultSet.getString("role"));
             }
         }catch (SQLException e){
             e.printStackTrace();
@@ -104,4 +107,49 @@ public class UserService {
 
         return false;
     }
+
+    public static List<String> getUserRoles(){
+        List<String> roles = new ArrayList<>();
+        String query = "SELECT unnest(enum_range(NULL::user_role))";
+
+        try(Connection ignored = Config.connect()){
+            Statement statement = Config.connect().createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()){
+                roles.add(resultSet.getString(1));
+            }
+
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return roles;
+    }
+
+    public static List<User> getUsersByRole(String role){
+        String query = "SELECT * FROM users WHERE role = ?::user_role";
+        User user;
+        ArrayList<User> users = new ArrayList<>();
+
+        try (Connection ignored = Config.connect()){
+            PreparedStatement preparedStatement = Config.connect().prepareStatement(query);
+            preparedStatement.setString(1, role);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                user = new User();
+                user.setId(resultSet.getInt("id"));
+                user.setName(resultSet.getString("name"));
+                user.setSurname(resultSet.getString("surname"));
+                user.setUserName(resultSet.getString("username"));
+                user.setPassword(resultSet.getString("password"));
+                user.setRole(resultSet.getString("role"));
+                users.add(user);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return users;
+
+    }
+
 }

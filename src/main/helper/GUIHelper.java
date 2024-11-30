@@ -23,12 +23,16 @@ public class GUIHelper {
         );
     }
 
-    public static DefaultTableModel createTableModel(String[] columnNames) {
-        DefaultTableModel model = new DefaultTableModel();
-        for (String column : columnNames) {
-            model.addColumn(column);
-        }
-        return model;
+    public static DefaultTableModel createTableModel() {
+        return new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                if (column == 0){
+                    return false;
+                }
+                return super.isCellEditable(row, column);
+            }
+        };
     }
 
 
