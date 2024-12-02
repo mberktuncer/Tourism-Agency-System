@@ -30,11 +30,12 @@ public class AddHotelGUI extends JFrame{
     private JCheckBox chkbox_roomservice;
     private JButton btn_add;
     private JButton btn_cancel;
+    private StaffGUI staffGUI;
 
-    public AddHotelGUI(){
+    public AddHotelGUI(StaffGUI staffGUI){
+        this.staffGUI = staffGUI;
         initializeGUI();
         initializeEvents();
-
     }
 
     private void initializeGUI() {
@@ -120,7 +121,7 @@ public class AddHotelGUI extends JFrame{
             fld_email.setText(null);
             fld_star.setText(null);
             fld_phone_number.setText(null);
-
+            staffGUI.loadHotelModel(HotelService.listAll());
         });
 
     }
@@ -138,10 +139,5 @@ public class AddHotelGUI extends JFrame{
             }
         }
         throw new IllegalArgumentException("Invalid BoardingHouseType: " + formattedName);
-    }
-
-    public static void main(String[] args) {
-        GUIHelper.setLookAndFeel();
-        AddHotelGUI addHotelGUI = new AddHotelGUI();
     }
 }

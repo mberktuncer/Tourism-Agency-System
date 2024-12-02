@@ -8,6 +8,8 @@ import main.service.HotelService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,6 +40,7 @@ public class StaffGUI extends JFrame{
         loadHotelModel(HotelService.listAll());
         initializeEvents();
 
+
     }
 
     private void initializeGUI() {
@@ -59,9 +62,12 @@ public class StaffGUI extends JFrame{
             loadHotelModel(search);
             System.out.println("Search results size: " + search.size());
         });
+        btn_add_hotel.addActionListener(e -> {
+            AddHotelGUI addHotelGUI = new AddHotelGUI(this);
+        });
     }
 
-    private void loadHotelModel(ArrayList<Hotel> hotels) {
+    protected void loadHotelModel(ArrayList<Hotel> hotels) {
         DefaultTableModel clearModel = (DefaultTableModel) tbl_hotel_list.getModel();
         clearModel.setRowCount(0);
         hotels.forEach(this::addHotelToModel);
