@@ -28,7 +28,6 @@ public class HotelService {
                 hotel.setEmail(resultSet.getString("email"));
                 hotel.setPhoneNumber(resultSet.getString("phone_number"));
                 hotel.setStar(resultSet.getString("star"));
-
                 String boardingTypeStr = resultSet.getString("boarding_house_type");
                 if (boardingTypeStr != null){
                     hotel.setBoardingHouseType(BoardingHouseType.valueOf(boardingTypeStr));
@@ -49,6 +48,41 @@ public class HotelService {
             e.printStackTrace();
         }
         return hotels;
+    }
+
+    public static Hotel getHotelByEmail(String email){
+        String query = "SELECT * FROM hotel WHERE email = ?";
+        Hotel hotel = null;
+        try(Connection connection = Config.connect()){
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                hotel = new Hotel();
+                hotel.setId(resultSet.getInt("id"));
+                hotel.setName(resultSet.getString("name"));
+                hotel.setAddress(resultSet.getString("address"));
+                hotel.setEmail(resultSet.getString("email"));
+                hotel.setPhoneNumber(resultSet.getString("phone_number"));
+                hotel.setStar(resultSet.getString("star"));
+                String boardingTypeStr = resultSet.getString("boarding_house_type");
+                if (boardingTypeStr != null){
+                    hotel.setBoardingHouseType(BoardingHouseType.valueOf(boardingTypeStr));
+                }
+
+                Array sqlArray = resultSet.getArray("facility_features");
+                if (sqlArray != null) {
+                    String[] featuresArray = (String[]) sqlArray.getArray();
+                    List<FacilityFeatures> featuresList = Arrays.stream(featuresArray)
+                            .map(FacilityFeatures::valueOf)
+                            .collect(Collectors.toList());
+                    hotel.setFacilityFeatures(featuresList);
+                }
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return hotel;
     }
 
 }
