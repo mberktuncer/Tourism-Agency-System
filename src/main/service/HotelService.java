@@ -1,6 +1,7 @@
 package main.service;
 
 import main.helper.Config;
+import main.helper.GUIHelper;
 import main.model.hotel.BoardingHouseType;
 import main.model.hotel.FacilityFeatures;
 import main.model.hotel.Hotel;
@@ -9,6 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class HotelService {
@@ -88,6 +90,12 @@ public class HotelService {
     public static boolean add(Hotel hotel) {
         String query = "INSERT INTO hotel (name, address, email, phone_number, star, boarding_house_type, facility_features) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        Hotel findHotel = getHotelByEmail(hotel.getEmail());
+
+        if (findHotel != null && findHotel.getEmail().equals(hotel.getEmail())){
+            GUIHelper.showMessage("This hotel with this email address used before");
+            return false;
+        }
 
         try (Connection connection = Config.connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -151,6 +159,46 @@ public class HotelService {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static ArrayList<Hotel> searchHotel(String name){
+        String query = "SELECT * FROM hotel WHERE name ILIKE ?";
+        ArrayList<Hotel> hotels = new ArrayList<>();
+        Hotel hotel;
+        try (Connection connection = Config.connect()){
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, "%" + name + "%");
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                hotel = new Hotel();
+                hotel.setId(resultSet.getInt("id"));
+                hotel.setName(resultSet.getString("name"));
+                hotel.setAddress(resultSet.getString("address"));
+                hotel.setEmail(resultSet.getString("email"));
+                hotel.setPhoneNumber(resultSet.getString("phone_number"));
+                hotel.setStar(resultSet.getString("star"));
+                String boardingTypeStr = resultSet.getString("boarding_house_type");
+                if (boardingTypeStr != null){
+                    hotel.setBoardingHouseType(BoardingHouseType.valueOf(boardingTypeStr));
+                }
+
+                Array sqlArray = resultSet.getArray("facility_features");
+                if (sqlArray != null) {
+                    String[] featuresArray = (String[]) sqlArray.getArray();
+                    List<FacilityFeatures> featuresList = Arrays.stream(featuresArray)
+                            .map(FacilityFeatures::valueOf)
+                            .collect(Collectors.toList());
+                    hotel.setFacilityFeatures(featuresList);
+                }
+
+                hotels.add(hotel);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return hotels;
+
     }
 
     public static boolean deleteById(int id) {

@@ -2,18 +2,25 @@ package main.ui;
 
 import main.helper.Constants;
 import main.helper.GUIHelper;
+import main.model.hotel.FacilityFeatures;
 import main.model.hotel.Hotel;
 import main.service.HotelService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class StaffGUI extends JFrame{
     private JPanel wrapper;
     private JPanel pnl_top;
     private JTabbedPane tab_hotel;
     private JTable tbl_hotel_list;
+    private JButton btn_logout;
+    private JTextField fld_hotel_name;
+    private JButton btn_search_hotel;
+    private JButton btn_add_hotel;
     private DefaultTableModel mdl_hotel_list;
     private Object[] row_hotel_list;
 
@@ -28,7 +35,9 @@ public class StaffGUI extends JFrame{
         tbl_hotel_list.setModel(mdl_hotel_list);
         tbl_hotel_list.getTableHeader().setReorderingAllowed(false);
 
-        loadHotelModel();
+        loadHotelModel(HotelService.listAll());
+        initializeEvents();
+
     }
 
     private void initializeGUI() {
@@ -40,29 +49,55 @@ public class StaffGUI extends JFrame{
         setVisible(true);
     }
 
-    private void loadHotelModel(){
+    private void initializeEvents(){
+        btn_logout.addActionListener(e -> {
+            dispose();
+        });
+        btn_search_hotel.addActionListener(e -> {
+            String name = fld_hotel_name.getText();
+            ArrayList<Hotel> search = HotelService.searchHotel(name);
+            loadHotelModel(search);
+            System.out.println("Search results size: " + search.size());
+        });
+    }
+
+    private void loadHotelModel(ArrayList<Hotel> hotels) {
         DefaultTableModel clearModel = (DefaultTableModel) tbl_hotel_list.getModel();
         clearModel.setRowCount(0);
-
-        List<Hotel> hotels = HotelService.listAll();
-
-        for (Hotel hotel : hotels){
-            int i = 0;
-            row_hotel_list[i++] = hotel.getId();
-            row_hotel_list[i++] = hotel.getName();
-            row_hotel_list[i++] = hotel.getAddress();
-            row_hotel_list[i++] = hotel.getEmail();
-            row_hotel_list[i++] = hotel.getPhoneNumber();
-            row_hotel_list[i++] = hotel.getStar();
-            row_hotel_list[i++] = hotel.getBoardingHouseType();
-            row_hotel_list[i++] = hotel.getFacilityFeatures();
-            mdl_hotel_list.addRow(row_hotel_list);
-        }
+        hotels.forEach(this::addHotelToModel);
     }
+
+    private void addHotelToModel(Hotel hotel) {
+        DefaultTableModel model = (DefaultTableModel) tbl_hotel_list.getModel();
+        Object[] row = {
+                hotel.getId(),
+                hotel.getName(),
+                hotel.getAddress(),
+                hotel.getEmail(),
+                hotel.getPhoneNumber(),
+                hotel.getStar(),
+                formatEnum(hotel.getBoardingHouseType()),
+                formatFeatures(hotel.getFacilityFeatures())
+        };
+        model.addRow(row);
+    }
+
+    private String formatEnum(Enum<?> enumValue) {
+        String rawName = enumValue.name().toLowerCase().replace("_", " ");
+        return Character.toUpperCase(rawName.charAt(0)) + rawName.substring(1);
+    }
+
+    private String formatFeatures(List<FacilityFeatures> features) {
+        return features.stream()
+                .map(this::formatEnum)
+                .collect(Collectors.joining(", "));
+    }
+
 
     public static void main(String[] args) {
         GUIHelper.setLookAndFeel();
         StaffGUI staffGUI = new StaffGUI();
+
 
     }
 }
