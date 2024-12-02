@@ -7,9 +7,11 @@ import main.service.UserService;
 import org.w3c.dom.html.HTMLBRElement;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.PublicKey;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,18 +39,17 @@ public class AdminGUI extends JFrame {
 
         GUIHelper.setLookAndFeel();
         initializeGUI();
-        initializeEvents();
         setVisible(true);
 
-        mdl_user_list = GUIHelper.createTableModel();
-        Object[] columnUserList = {"Id", "Name", "Surname", "User Name", "Role"};
-        mdl_user_list.setColumnIdentifiers(columnUserList);
+        String[] columnUserList = {"Id", "Name", "Surname", "User Name", "Role"};
+        mdl_user_list = GUIHelper.createCustomTableModel(columnUserList, 0);
         row_user_list = new Object[columnUserList.length];
-        loadUserModel(Constants.ROLES_ALL);
 
         tbl_user_list.setModel(mdl_user_list);
         tbl_user_list.getTableHeader().setReorderingAllowed(false);
 
+        loadUserModel(Constants.ROLES_ALL);
+        initializeEvents();
 
     }
 
@@ -83,15 +84,6 @@ public class AdminGUI extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setTitle(Constants.WINDOW_TITLE);
         populateRoles();
-    }
-
-    private void populateRoles() {
-        cmb_search_user_role.addItem(Constants.ROLES_ALL);
-        List<String> roles = UserService.getUserRoles();
-        for (String role : roles) {
-            cmb_role.addItem(role);
-            cmb_search_user_role.addItem(role);
-        }
     }
 
     private void initializeEvents() {
@@ -154,7 +146,33 @@ public class AdminGUI extends JFrame {
             }
         });
 
+        tbl_user_list.getModel().addTableModelListener(e -> {
+            System.out.println("Event triggered: " + e.getType());
+            if (e.getType() == TableModelEvent.UPDATE){
+                int id = Integer.parseInt(tbl_user_list.getValueAt(tbl_user_list.getSelectedRow(), 0).toString());
+                String name = tbl_user_list.getValueAt(tbl_user_list.getSelectedRow(), 1).toString();
+                String surname = tbl_user_list.getValueAt(tbl_user_list.getSelectedRow(), 2).toString();
+                String userName = tbl_user_list.getValueAt(tbl_user_list.getSelectedRow(), 3).toString();
+                String role = tbl_user_list.getValueAt(tbl_user_list.getSelectedRow(), 4).toString();
+
+                if (UserService.update(id, name, surname, userName, role)){
+                    GUIHelper.showMessage(Constants.MSG_DONE);
+                }
+                loadUserModel(Constants.ROLES_ALL);
+            }
+        });
+
     }
+
+    private void populateRoles() {
+        cmb_search_user_role.addItem(Constants.ROLES_ALL);
+        List<String> roles = UserService.getUserRoles();
+        for (String role : roles) {
+            cmb_role.addItem(role);
+            cmb_search_user_role.addItem(role);
+        }
+    }
+
 
     public static void main(String[] args) {
 

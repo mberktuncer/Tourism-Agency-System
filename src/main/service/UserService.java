@@ -114,8 +114,8 @@ public class UserService {
         List<String> roles = new ArrayList<>();
         String query = "SELECT unnest(enum_range(NULL::user_role))";
 
-        try(Connection ignored = Config.connect()){
-            Statement statement = Config.connect().createStatement();
+        try(Connection connection = Config.connect()){
+            Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()){
                 roles.add(resultSet.getString(1));
@@ -132,8 +132,8 @@ public class UserService {
         User user;
         ArrayList<User> users = new ArrayList<>();
 
-        try (Connection ignored = Config.connect()){
-            PreparedStatement preparedStatement = Config.connect().prepareStatement(query);
+        try (Connection connection = Config.connect()){
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, role);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
@@ -154,19 +154,21 @@ public class UserService {
 
     }
 
-    public static boolean update(String name, String surname, String userName, String role){
-        String query = "UPDATE users SET name = ?, surname = ?, username = ?, role = ? WHERE username = ?";
+    public static boolean update(int id, String name, String surname, String userName, String role){
+        String query = "UPDATE users SET name = ?, surname = ?, username = ?, role = ?::user_role WHERE id = ?";
         User user = getUserByUserName(userName);
-        if (user != null && !Objects.equals(user.getUserName(), userName)){
+        if (user != null && !user.getUserName().equals(userName)) {
             GUIHelper.showMessage("This username has been used before");
             return false;
         }
-        try(Connection ignored = Config.connect()){
-            PreparedStatement preparedStatement = Config.connect().prepareStatement(query);
+        try(Connection connection = Config.connect()){
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, surname);
             preparedStatement.setString(3, userName);
             preparedStatement.setString(4, role);
+            preparedStatement.setInt(5, id);
             return preparedStatement.executeUpdate() == 1;
         }catch (SQLException e){
             System.out.println(e.getMessage());

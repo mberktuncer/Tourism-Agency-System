@@ -23,17 +23,16 @@ public class GUIHelper {
         );
     }
 
-    public static DefaultTableModel createTableModel() {
-        return new DefaultTableModel() {
+    public static DefaultTableModel createCustomTableModel(String[] columns, int nonEditableColumnIndex) {
+        return new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                if (column == 0){
-                    return false;
-                }
-                return super.isCellEditable(row, column);
+                return column != nonEditableColumnIndex;
             }
         };
     }
+
+
 
 
     public static boolean isFieldEmpty(JTextField jTextField){
