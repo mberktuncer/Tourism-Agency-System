@@ -118,9 +118,6 @@ public class HotelService {
         return false;
     }
 
-
-
-
     public static boolean update(Hotel hotel) {
         String query = "UPDATE hotel SET name = ?, address = ?, email = ?, phone_number = ?, star = ?, " +
                 "boarding_house_type = ?, facility_features = ? WHERE id = ?";

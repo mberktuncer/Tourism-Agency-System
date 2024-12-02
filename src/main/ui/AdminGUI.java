@@ -39,7 +39,6 @@ public class AdminGUI extends JFrame {
 
         GUIHelper.setLookAndFeel();
         initializeGUI();
-        setVisible(true);
 
         String[] columnUserList = {"Id", "Name", "Surname", "User Name", "Role"};
         mdl_user_list = GUIHelper.createCustomTableModel(columnUserList, 0);
@@ -84,6 +83,7 @@ public class AdminGUI extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setTitle(Constants.WINDOW_TITLE);
         populateRoles();
+        setVisible(true);
     }
 
     private void initializeEvents() {
