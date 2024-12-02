@@ -1,5 +1,6 @@
 package main.model.hotel;
 
+import java.util.List;
 import java.util.Set;
 
 public class Hotel {
@@ -10,9 +11,9 @@ public class Hotel {
     private String phoneNumber;
     private String star;
     private BoardingHouseType boardingHouseType;
-    private Set<FacilityFeatures> facilityFeatures;
+    private List<FacilityFeatures> facilityFeatures;
 
-    public Hotel(int id, String name, String address, String email, String phoneNumber, String star, BoardingHouseType boardingHouseType, Set<FacilityFeatures> facilityFeatures) {
+    public Hotel(int id, String name, String address, String email, String phoneNumber, String star, BoardingHouseType boardingHouseType, List<FacilityFeatures> facilityFeatures) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -21,6 +22,10 @@ public class Hotel {
         this.star = star;
         this.boardingHouseType = boardingHouseType;
         this.facilityFeatures = facilityFeatures;
+    }
+
+    public Hotel(){
+
     }
 
     public int getId() {
@@ -79,11 +84,25 @@ public class Hotel {
         this.boardingHouseType = boardingHouseType;
     }
 
-    public Set<FacilityFeatures> getFacilityFeatures() {
+    public List<FacilityFeatures> getFacilityFeatures() {
         return facilityFeatures;
     }
 
-    public void setFacilityFeatures(Set<FacilityFeatures> facilityFeatures) {
+    public void setFacilityFeatures(List<FacilityFeatures> facilityFeatures) {
         this.facilityFeatures = facilityFeatures;
+    }
+
+    @Override
+    public String toString() {
+        return "Hotel{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", star='" + star + '\'' +
+                ", boardingHouseType=" + boardingHouseType +
+                ", facilityFeatures=" + facilityFeatures +
+                '}';
     }
 }

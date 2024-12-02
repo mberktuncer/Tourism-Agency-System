@@ -14,8 +14,8 @@ public class UserService {
         ArrayList<User> users = new ArrayList<>();
         String query = "SELECT * FROM users";
         User user;
-        try(Connection ignored = Config.connect()){
-            Statement statement = Config.connect().createStatement();
+        try(Connection connection = Config.connect()){
+            Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()){
                 user = new User();
