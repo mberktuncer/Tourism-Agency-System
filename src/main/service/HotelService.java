@@ -85,4 +85,92 @@ public class HotelService {
         return hotel;
     }
 
+    public static boolean add(Hotel hotel) {
+        String query = "INSERT INTO hotel (name, address, email, phone_number, star, boarding_house_type, facility_features) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection connection = Config.connect()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, hotel.getName());
+            preparedStatement.setString(2, hotel.getAddress());
+            preparedStatement.setString(3, hotel.getEmail());
+            preparedStatement.setString(4, hotel.getPhoneNumber());
+            preparedStatement.setString(5, hotel.getStar());
+
+            preparedStatement.setObject(6, hotel.getBoardingHouseType(), java.sql.Types.OTHER);
+
+            List<FacilityFeatures> featuresList = hotel.getFacilityFeatures();
+            if (featuresList != null && !featuresList.isEmpty()) {
+                String[] featuresArray = featuresList.stream()
+                        .map(Enum::name)
+                        .toArray(String[]::new);
+                Array sqlArray = connection.createArrayOf("facility_features_enum", featuresArray);
+                preparedStatement.setArray(7, sqlArray);
+            } else {
+                preparedStatement.setArray(7, null);
+            }
+
+            return preparedStatement.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+
+
+    public static boolean update(Hotel hotel) {
+        String query = "UPDATE hotel SET name = ?, address = ?, email = ?, phone_number = ?, star = ?, " +
+                "boarding_house_type = ?, facility_features = ? WHERE id = ?";
+        try (Connection connection = Config.connect()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setString(1, hotel.getName());
+            preparedStatement.setString(2, hotel.getAddress());
+            preparedStatement.setString(3, hotel.getEmail());
+            preparedStatement.setString(4, hotel.getPhoneNumber());
+            preparedStatement.setString(5, hotel.getStar());
+
+            preparedStatement.setObject(6, hotel.getBoardingHouseType(), java.sql.Types.OTHER);
+
+            List<FacilityFeatures> featuresList = hotel.getFacilityFeatures();
+            if (featuresList != null && !featuresList.isEmpty()) {
+                String[] featuresArray = featuresList.stream()
+                        .map(Enum::name)
+                        .toArray(String[]::new);
+                Array sqlArray = connection.createArrayOf("facility_features_enum", featuresArray);
+                preparedStatement.setArray(7, sqlArray);
+            } else {
+                preparedStatement.setArray(7, null);
+            }
+
+            preparedStatement.setInt(8, hotel.getId());
+            return preparedStatement.executeUpdate() == 1;
+        } catch (SQLException e) {
+            System.out.println("SQL Error Code: " + e.getErrorCode());
+            System.out.println("SQL State: " + e.getSQLState());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean deleteById(int id) {
+        String query = "DELETE FROM hotel WHERE id = ?";
+        try (Connection connection = Config.connect()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setInt(1, id);
+
+            return preparedStatement.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+
+
 }
