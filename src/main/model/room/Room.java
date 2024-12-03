@@ -8,18 +8,14 @@ public class Room {
     private int bedCount;
     private int squareMeters;
     private int stock;
-    private double adultPrice;
-    private double childPrice;
 
-    public Room(int id, int hotelId, String roomType, int bedCount, int squareMeters, int stock, double adultPrice, double childPrice) {
+    public Room(int id, int hotelId, String roomType, int bedCount, int squareMeters, int stock) {
         this.id = id;
         this.hotelId = hotelId;
         this.roomType = roomType;
         this.bedCount = bedCount;
         this.squareMeters = squareMeters;
         this.stock = stock;
-        this.adultPrice = adultPrice;
-        this.childPrice = childPrice;
     }
 
     public Room(){
@@ -74,22 +70,6 @@ public class Room {
         this.stock = stock;
     }
 
-    public double getAdultPrice() {
-        return adultPrice;
-    }
-
-    public void setAdultPrice(double adultPrice) {
-        this.adultPrice = adultPrice;
-    }
-
-    public double getChildPrice() {
-        return childPrice;
-    }
-
-    public void setChildPrice(double childPrice) {
-        this.childPrice = childPrice;
-    }
-
     @Override
     public String toString() {
         return "Room{" +
@@ -99,8 +79,6 @@ public class Room {
                 ", bedCount=" + bedCount +
                 ", squareMeters=" + squareMeters +
                 ", stock=" + stock +
-                ", adultPrice=" + adultPrice +
-                ", childPrice=" + childPrice +
                 '}';
     }
 }

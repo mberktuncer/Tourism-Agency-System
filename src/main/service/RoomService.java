@@ -24,8 +24,6 @@ public class RoomService {
                 room.setBedCount(resultSet.getInt("bed_count"));
                 room.setSquareMeters(resultSet.getInt("square_meters"));
                 room.setStock(resultSet.getInt("stock"));
-                room.setAdultPrice(resultSet.getDouble("adult_price"));
-                room.setChildPrice(resultSet.getDouble("child_price"));
                 rooms.add(room);
             }
         }
@@ -51,8 +49,6 @@ public class RoomService {
                 room.setBedCount(resultSet.getInt("bed_count"));
                 room.setSquareMeters(resultSet.getInt("square_meters"));
                 room.setStock(resultSet.getInt("stock"));
-                room.setAdultPrice(resultSet.getDouble("adult_price"));
-                room.setChildPrice(resultSet.getDouble("child_price"));
             }
         }catch (SQLException e){
             e.printStackTrace();
@@ -61,8 +57,8 @@ public class RoomService {
     }
 
     public static boolean add(Room room){
-        String query = "INSERT INTO room (hotel_id, room_type, bed_count, square_meters, stock, adult_price, child_price)" +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO room (hotel_id, room_type, bed_count, square_meters, stock)" +
+                "VALUES (?, ?, ?, ?, ?)";
         Room findRoom = getRoomByRoomTypeHotelId(room.getRoomType(), room.getHotelId());
         if ((findRoom != null) && (findRoom.getRoomType().equals(room.getRoomType())) && (findRoom.getHotelId() == room.getHotelId())){
             GUIHelper.showMessage("This room already added");
@@ -77,8 +73,6 @@ public class RoomService {
             preparedStatement.setInt(3, room.getBedCount());
             preparedStatement.setInt(4, room.getSquareMeters());
             preparedStatement.setInt(5, room.getStock());
-            preparedStatement.setDouble(6, room.getAdultPrice());
-            preparedStatement.setDouble(7, room.getChildPrice());
             return preparedStatement.executeUpdate() == 1;
         }catch (SQLException e){
             e.printStackTrace();
@@ -87,8 +81,8 @@ public class RoomService {
     }
 
     public static boolean update(Room room){
-        String query = "UPDATE room set hotel_id = ?, room_type = ?, bed_count = ?, square_meters = ?, stock = ?," +
-                " adult_price = ?, child_price = ? WHERE id = ?";
+        String query = "UPDATE room set hotel_id = ?, room_type = ?, bed_count = ?, square_meters = ?, stock = ? " +
+                "WHERE id = ?";
         try(Connection connection = Config.connect()){
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
@@ -97,9 +91,7 @@ public class RoomService {
             preparedStatement.setInt(3, room.getBedCount());
             preparedStatement.setInt(4, room.getSquareMeters());
             preparedStatement.setInt(5, room.getStock());
-            preparedStatement.setDouble(6, room.getAdultPrice());
-            preparedStatement.setDouble(7, room.getChildPrice());
-            preparedStatement.setInt(8, room.getId());
+            preparedStatement.setInt(6, room.getId());
             return preparedStatement.executeUpdate() == 1;
         }catch (SQLException e){
             e.printStackTrace();

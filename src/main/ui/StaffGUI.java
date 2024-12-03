@@ -133,8 +133,6 @@ public class StaffGUI extends JFrame{
                 room.getBedCount(),
                 room.getSquareMeters(),
                 room.getStock(),
-                room.getAdultPrice(),
-                room.getChildPrice()
         };
         model.addRow(row);
     }
