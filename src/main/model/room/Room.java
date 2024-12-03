@@ -22,6 +22,10 @@ public class Room {
         this.childPrice = childPrice;
     }
 
+    public Room(){
+
+    }
+
     public int getId() {
         return id;
     }
@@ -84,5 +88,19 @@ public class Room {
 
     public void setChildPrice(double childPrice) {
         this.childPrice = childPrice;
+    }
+
+    @Override
+    public String toString() {
+        return "Room{" +
+                "id=" + id +
+                ", hotelId=" + hotelId +
+                ", roomType='" + roomType + '\'' +
+                ", bedCount=" + bedCount +
+                ", squareMeters=" + squareMeters +
+                ", stock=" + stock +
+                ", adultPrice=" + adultPrice +
+                ", childPrice=" + childPrice +
+                '}';
     }
 }
