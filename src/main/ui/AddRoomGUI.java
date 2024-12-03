@@ -3,11 +3,10 @@ package main.ui;
 import main.helper.Constants;
 import main.helper.GUIHelper;
 import main.model.room.Room;
+import main.model.room.RoomPrice;
 import main.service.RoomService;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class AddRoomGUI extends JFrame{
     private JPanel panel1;
@@ -23,6 +22,7 @@ public class AddRoomGUI extends JFrame{
     private JTextField fld_adult_price;
     private JTextField fld_child_price;
     private JButton setPriceForSelectedButton;
+    private JTextField fld_room_id;
     private StaffGUI staffGUI;
 
     public AddRoomGUI(StaffGUI staffGUI){
@@ -86,6 +86,17 @@ public class AddRoomGUI extends JFrame{
             }
             else{
                 String season = cmb_seasons.getSelectedItem().toString();
+                int seasonId = 1;
+                if (season.equals("Winter")){
+                    seasonId = 2;
+                }
+
+                RoomPrice roomPrice = new RoomPrice();
+                roomPrice.setRoomId(Integer.parseInt(fld_room_id.getText()));
+                roomPrice.setSeasonId(seasonId);
+                roomPrice.setAdultPrice(Double.parseDouble(fld_adult_price.getText()));
+                roomPrice.setChildPrice(Double.parseDouble(fld_child_price.getText()));
+
 
             }
 

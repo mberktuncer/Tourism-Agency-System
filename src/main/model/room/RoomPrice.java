@@ -15,6 +15,10 @@ public class RoomPrice {
         this.childPrice = childPrice;
     }
 
+    public RoomPrice(){
+
+    }
+
     public int getId() {
         return id;
     }
