@@ -36,6 +36,9 @@ public class StaffGUI extends JFrame{
 
         tbl_hotel_list.setModel(mdl_hotel_list);
         tbl_hotel_list.getTableHeader().setReorderingAllowed(false);
+        tbl_hotel_list.getColumnModel().getColumn(0).setMaxWidth(40);
+        tbl_hotel_list.getColumnModel().getColumn(5).setMaxWidth(40);
+        tbl_hotel_list.getColumnModel().getColumn(4).setMaxWidth(150);
 
         loadHotelModel(HotelService.listAll());
         initializeEvents();
