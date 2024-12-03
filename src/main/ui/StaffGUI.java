@@ -31,9 +31,29 @@ public class StaffGUI extends JFrame{
     private Object[] row_room_list;
 
     public StaffGUI(){
-        GUIHelper.setLookAndFeel();
+
         initializeGUI();
 
+        setHotelTable();
+        setRoomTable();
+        loadHotelModel(HotelService.listAll());
+        loadRoomModel(RoomService.listAll());
+
+        initializeEvents();
+
+    }
+
+    private void initializeGUI() {
+        GUIHelper.setLookAndFeel();
+        add(wrapper);
+        setSize(1500, 500);
+        GUIHelper.centerFrame(this);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setTitle(Constants.WINDOW_TITLE);
+        setVisible(true);
+    }
+
+    private void setHotelTable(){
         String[] columnHotelList = {"Id", "Name", "Address", "Email", "Phone Number", "Star", "Boarding House Type", "Facility Features"};
         mdl_hotel_list = GUIHelper.createCustomTableModel(columnHotelList, 0);
         row_hotel_list = new Object[columnHotelList.length];
@@ -43,6 +63,9 @@ public class StaffGUI extends JFrame{
         tbl_hotel_list.getColumnModel().getColumn(0).setMaxWidth(40);
         tbl_hotel_list.getColumnModel().getColumn(5).setMaxWidth(40);
         tbl_hotel_list.getColumnModel().getColumn(4).setMaxWidth(150);
+    }
+
+    private void setRoomTable(){
 
         String[] columnRoomList = {"Id", "Hotel Id", "Room Type", "Bed Count", "Square Meters", "Stock", "Adult Price", "Child Price"};
         mdl_room_list = GUIHelper.createCustomTableModel(columnRoomList, 0);
@@ -52,21 +75,6 @@ public class StaffGUI extends JFrame{
         tbl_room_list.getTableHeader().setReorderingAllowed(false);
         tbl_room_list.getColumnModel().getColumn(0).setMaxWidth(40);
         tbl_room_list.getColumnModel().getColumn(1).setMaxWidth(80);
-
-        loadHotelModel(HotelService.listAll());
-        loadRoomModel(RoomService.listAll());
-        initializeEvents();
-
-
-    }
-
-    private void initializeGUI() {
-        add(wrapper);
-        setSize(1500, 500);
-        GUIHelper.centerFrame(this);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setTitle(Constants.WINDOW_TITLE);
-        setVisible(true);
     }
 
     private void initializeEvents(){
