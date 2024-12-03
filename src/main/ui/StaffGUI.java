@@ -10,6 +10,8 @@ import main.service.RoomService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -89,6 +91,9 @@ public class StaffGUI extends JFrame{
         });
         btn_add_hotel.addActionListener(e -> {
             AddHotelGUI addHotelGUI = new AddHotelGUI(this);
+        });
+        addNewRoomButton.addActionListener(e -> {
+            AddRoomGUI addRoomGUI = new AddRoomGUI(this);
         });
     }
 
