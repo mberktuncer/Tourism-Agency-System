@@ -4,12 +4,12 @@ import main.helper.Constants;
 import main.helper.GUIHelper;
 import main.model.hotel.FacilityFeatures;
 import main.model.hotel.Hotel;
+import main.model.room.Room;
 import main.service.HotelService;
+import main.service.RoomService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,8 +23,12 @@ public class StaffGUI extends JFrame{
     private JTextField fld_hotel_name;
     private JButton btn_search_hotel;
     private JButton btn_add_hotel;
+    private JButton addNewRoomButton;
+    private JTable tbl_room_list;
     private DefaultTableModel mdl_hotel_list;
     private Object[] row_hotel_list;
+    private DefaultTableModel mdl_room_list;
+    private Object[] row_room_list;
 
     public StaffGUI(){
         GUIHelper.setLookAndFeel();
@@ -40,7 +44,17 @@ public class StaffGUI extends JFrame{
         tbl_hotel_list.getColumnModel().getColumn(5).setMaxWidth(40);
         tbl_hotel_list.getColumnModel().getColumn(4).setMaxWidth(150);
 
+        String[] columnRoomList = {"Id", "Hotel Id", "Room Type", "Bed Count", "Square Meters", "Stock", "Adult Price", "Child Price"};
+        mdl_room_list = GUIHelper.createCustomTableModel(columnRoomList, 0);
+        row_room_list = new Object[columnRoomList.length];
+
+        tbl_room_list.setModel(mdl_room_list);
+        tbl_room_list.getTableHeader().setReorderingAllowed(false);
+        tbl_room_list.getColumnModel().getColumn(0).setMaxWidth(40);
+        tbl_room_list.getColumnModel().getColumn(1).setMaxWidth(80);
+
         loadHotelModel(HotelService.listAll());
+        loadRoomModel(RoomService.listAll());
         initializeEvents();
 
 
@@ -76,6 +90,12 @@ public class StaffGUI extends JFrame{
         hotels.forEach(this::addHotelToModel);
     }
 
+    protected void loadRoomModel(ArrayList<Room> rooms){
+        DefaultTableModel clearModel = (DefaultTableModel) tbl_room_list.getModel();
+        clearModel.setRowCount(0);
+        rooms.forEach(this::addRoomToModel);
+    }
+
     private void addHotelToModel(Hotel hotel) {
         DefaultTableModel model = (DefaultTableModel) tbl_hotel_list.getModel();
         Object[] row = {
@@ -87,6 +107,21 @@ public class StaffGUI extends JFrame{
                 hotel.getStar(),
                 formatEnum(hotel.getBoardingHouseType()),
                 formatFeatures(hotel.getFacilityFeatures())
+        };
+        model.addRow(row);
+    }
+
+    private void addRoomToModel(Room room){
+        DefaultTableModel model = (DefaultTableModel) tbl_room_list.getModel();
+        Object[] row = {
+                room.getId(),
+                room.getHotelId(),
+                room.getRoomType(),
+                room.getBedCount(),
+                room.getSquareMeters(),
+                room.getStock(),
+                room.getAdultPrice(),
+                room.getChildPrice()
         };
         model.addRow(row);
     }
