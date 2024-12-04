@@ -4,6 +4,7 @@ import main.helper.Constants;
 import main.helper.GUIHelper;
 import main.model.room.Room;
 import main.model.room.RoomPrice;
+import main.service.RoomPriceService;
 import main.service.RoomService;
 
 import javax.swing.*;
@@ -35,7 +36,7 @@ public class AddRoomGUI extends JFrame{
     private void initializeGUI() {
         GUIHelper.setLookAndFeel();
         add(wrapper);
-        setSize(500, 400);
+        setSize(500, 460);
         GUIHelper.centerFrame(this);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setTitle(Constants.WINDOW_TITLE);
@@ -74,8 +75,7 @@ public class AddRoomGUI extends JFrame{
             fld_bed_count.setText(null);
             fld_sqr_meters.setText(null);
             fld_stock.setText(null);
-            fld_adult_price.setText(null);
-            fld_child_price.setText(null);
+
             staffGUI.loadRoomModel(RoomService.listAll());
 
         });
@@ -85,9 +85,9 @@ public class AddRoomGUI extends JFrame{
                 GUIHelper.showMessage(Constants.MSG_FILL);
             }
             else{
-                String season = cmb_seasons.getSelectedItem().toString();
+                String seasonName = cmb_seasons.getSelectedItem().toString();
                 int seasonId = 1;
-                if (season.equals("Winter")){
+                if (seasonName.equals("Winter")){
                     seasonId = 2;
                 }
 
@@ -97,6 +97,16 @@ public class AddRoomGUI extends JFrame{
                 roomPrice.setAdultPrice(Double.parseDouble(fld_adult_price.getText()));
                 roomPrice.setChildPrice(Double.parseDouble(fld_child_price.getText()));
 
+                if (GUIHelper.confirm(Constants.MSG_DONE)){
+                    if (RoomPriceService.add(roomPrice, Integer.parseInt(fld_room_id.getText()), seasonName)){
+                        GUIHelper.showMessage(Constants.MSG_DONE);
+                    }
+                    else{
+                        GUIHelper.showMessage(Constants.MSG_ERROR);
+                    }
+                }
+                fld_adult_price.setText(null);
+                fld_child_price.setText(null);
 
             }
 

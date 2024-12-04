@@ -32,10 +32,11 @@ public class RoomPriceService {
         return roomPrice;
     }
 
+
     public static boolean add(RoomPrice roomPrice, int roomId, String seasonName){
-        String query = "INSERT INTO room_price (room_id, season_id, adult_price, child_price)" +
-                "SELECT r.id, s.id, ?, ?" +
-                "FROM room r, season s" +
+        String query = "INSERT INTO room_price (room_id, season_id, adult_price, child_price) " +
+                "SELECT r.id, s.id, ?, ? " +
+                "FROM room r, season s " +
                 "WHERE r.id = ? AND s.season_name = ? ";
         RoomPrice findRoomPrice = getRoomPriceById(roomPrice.getId());
         if (findRoomPrice != null){

@@ -5,7 +5,9 @@ import main.helper.GUIHelper;
 import main.model.hotel.FacilityFeatures;
 import main.model.hotel.Hotel;
 import main.model.room.Room;
+import main.model.room.RoomPrice;
 import main.service.HotelService;
+import main.service.RoomPriceService;
 import main.service.RoomService;
 
 import javax.swing.*;
@@ -133,6 +135,7 @@ public class StaffGUI extends JFrame{
                 room.getBedCount(),
                 room.getSquareMeters(),
                 room.getStock(),
+
         };
         model.addRow(row);
     }
