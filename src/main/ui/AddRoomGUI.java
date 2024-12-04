@@ -3,6 +3,7 @@ package main.ui;
 import main.helper.Constants;
 import main.helper.GUIHelper;
 import main.model.room.Room;
+import main.model.room.RoomFeatures;
 import main.model.room.RoomPrice;
 import main.service.RoomPriceService;
 import main.service.RoomService;
@@ -24,6 +25,11 @@ public class AddRoomGUI extends JFrame{
     private JTextField fld_child_price;
     private JButton setPriceForSelectedButton;
     private JTextField fld_room_id;
+    private JCheckBox chck_tv;
+    private JCheckBox chck_minibar;
+    private JCheckBox chck_game_console;
+    private JCheckBox chck_safe;
+    private JCheckBox chck_projector;
     private StaffGUI staffGUI;
 
     public AddRoomGUI(StaffGUI staffGUI){
@@ -36,7 +42,7 @@ public class AddRoomGUI extends JFrame{
     private void initializeGUI() {
         GUIHelper.setLookAndFeel();
         add(wrapper);
-        setSize(500, 460);
+        setSize(600, 500);
         GUIHelper.centerFrame(this);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setTitle(Constants.WINDOW_TITLE);
@@ -49,6 +55,8 @@ public class AddRoomGUI extends JFrame{
         });
         addButton.addActionListener(e -> {
             Room room = new Room();
+            RoomFeatures roomFeatures = new RoomFeatures();
+            String[] features;
 
             if (fld_hotel_id.getText().isEmpty() || fld_bed_count.getText().isEmpty()
                     || fld_sqr_meters.getText().isEmpty() || fld_stock.getText().isEmpty()
@@ -61,6 +69,11 @@ public class AddRoomGUI extends JFrame{
                 room.setBedCount(Integer.parseInt(fld_bed_count.getText()));
                 room.setSquareMeters(Integer.parseInt(fld_sqr_meters.getText()));
                 room.setStock(Integer.parseInt(fld_stock.getText()));
+
+                if (chck_tv.isSelected()){
+
+                }
+
                 if (GUIHelper.confirm(Constants.MSG_SURE)){
                     if (RoomService.add(room)){
                         GUIHelper.showMessage(Constants.MSG_DONE);

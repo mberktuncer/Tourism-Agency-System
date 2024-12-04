@@ -1,16 +1,22 @@
 package main.model.room;
 
+import java.util.List;
+
 public class RoomFeatures {
     private int id;
     private int roomId;
-    private String roomFeatures;
+    private List<RoomFeaturesEnum> roomFeatures;
     private boolean isAvailable;
 
-    public RoomFeatures(int id, int roomId, String roomFeatures, boolean isAvailable) {
+    public RoomFeatures(int id, int roomId, List<RoomFeaturesEnum> roomFeatures, boolean isAvailable) {
         this.id = id;
         this.roomId = roomId;
         this.roomFeatures = roomFeatures;
         this.isAvailable = isAvailable;
+    }
+
+    public RoomFeatures(){
+
     }
 
     public int getId() {
@@ -29,11 +35,11 @@ public class RoomFeatures {
         this.roomId = roomId;
     }
 
-    public String getRoomFeatures() {
+    public List<RoomFeaturesEnum> getRoomFeatures() {
         return roomFeatures;
     }
 
-    public void setRoomFeatures(String roomFeatures) {
+    public void setRoomFeatures(List<RoomFeaturesEnum> roomFeatures) {
         this.roomFeatures = roomFeatures;
     }
 
