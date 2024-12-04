@@ -58,7 +58,7 @@ public class RoomService {
 
     public static boolean add(Room room){
         String query = "INSERT INTO room (hotel_id, room_type, bed_count, square_meters, stock)" +
-                "VALUES (?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?) RETURNING id";
         Room findRoom = getRoomByRoomTypeHotelId(room.getRoomType(), room.getHotelId());
         if ((findRoom != null) && (findRoom.getRoomType().equals(room.getRoomType())) && (findRoom.getHotelId() == room.getHotelId())){
             GUIHelper.showMessage("This room already added");
@@ -73,7 +73,13 @@ public class RoomService {
             preparedStatement.setInt(3, room.getBedCount());
             preparedStatement.setInt(4, room.getSquareMeters());
             preparedStatement.setInt(5, room.getStock());
-            return preparedStatement.executeUpdate() == 1;
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                int generatedId = rs.getInt("id"); // Dönen id sütunu alınır
+                room.setId(generatedId); // Room nesnesine ID set edilir
+                return true; // Ekleme işlemi başarılı
+            }
         }catch (SQLException e){
             e.printStackTrace();
         }

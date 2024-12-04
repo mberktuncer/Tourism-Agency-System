@@ -4,11 +4,15 @@ import main.helper.Constants;
 import main.helper.GUIHelper;
 import main.model.room.Room;
 import main.model.room.RoomFeatures;
+import main.model.room.RoomFeaturesEnum;
 import main.model.room.RoomPrice;
+import main.service.RoomFeaturesService;
 import main.service.RoomPriceService;
 import main.service.RoomService;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AddRoomGUI extends JFrame{
     private JPanel panel1;
@@ -56,11 +60,10 @@ public class AddRoomGUI extends JFrame{
         addButton.addActionListener(e -> {
             Room room = new Room();
             RoomFeatures roomFeatures = new RoomFeatures();
-            String[] features;
+
 
             if (fld_hotel_id.getText().isEmpty() || fld_bed_count.getText().isEmpty()
-                    || fld_sqr_meters.getText().isEmpty() || fld_stock.getText().isEmpty()
-                    || fld_adult_price.getText().isEmpty() || fld_child_price.getText().isEmpty()){
+                    || fld_sqr_meters.getText().isEmpty() || fld_stock.getText().isEmpty()){
                 GUIHelper.showMessage(Constants.MSG_FILL);
             }
             else{
@@ -70,18 +73,38 @@ public class AddRoomGUI extends JFrame{
                 room.setSquareMeters(Integer.parseInt(fld_sqr_meters.getText()));
                 room.setStock(Integer.parseInt(fld_stock.getText()));
 
-                if (chck_tv.isSelected()){
+                List<RoomFeaturesEnum> selectedRoomFeatures = new ArrayList<>();
 
+                if (chck_tv.isSelected()){
+                    selectedRoomFeatures.add(RoomFeaturesEnum.TELEVISION);
                 }
+                if (chck_minibar.isSelected()){
+                    selectedRoomFeatures.add(RoomFeaturesEnum.MINIBAR);
+                }
+                if (chck_game_console.isSelected()){
+                    selectedRoomFeatures.add(RoomFeaturesEnum.GAME_CONSOLE);
+                }
+                if (chck_safe.isSelected()){
+                    selectedRoomFeatures.add(RoomFeaturesEnum.SAFE);
+                }
+                if (chck_projector.isSelected()){
+                    selectedRoomFeatures.add(RoomFeaturesEnum.PROJECTOR);
+                }
+
+
 
                 if (GUIHelper.confirm(Constants.MSG_SURE)){
                     if (RoomService.add(room)){
                         GUIHelper.showMessage(Constants.MSG_DONE);
+                        roomFeatures.setRoomFeatures(selectedRoomFeatures);
+                        roomFeatures.setRoomId(room.getId());
+                        RoomFeaturesService.add(roomFeatures);
                     }
                     else{
                         GUIHelper.showMessage(Constants.MSG_ERROR);
                     }
                 }
+
             }
 
             fld_hotel_id.setText(null);
