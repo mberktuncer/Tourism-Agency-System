@@ -3,9 +3,11 @@ package main.service;
 import main.helper.Config;
 import main.helper.GUIHelper;
 import main.model.room.Room;
+import main.model.room.RoomDetails;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class RoomService {
 
@@ -103,6 +105,44 @@ public class RoomService {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static ArrayList<RoomDetails> listAllDetails() {
+        String query = "SELECT r.id AS room_id, r.hotel_id, r.room_type, r.bed_count, r.square_meters, " +
+                "r.stock, rp.adult_price, rp.child_price, rf.features " +
+                "FROM room r " +
+                "LEFT JOIN room_price rp ON r.id = rp.room_id " +
+                "LEFT JOIN room_features rf ON r.id = rf.room_id";
+
+        ArrayList<RoomDetails> roomDetailsList = new ArrayList<>();
+        try (Connection connection = Config.connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet rs = preparedStatement.executeQuery()) {
+
+            while (rs.next()) {
+                RoomDetails roomDetails = new RoomDetails();
+                roomDetails.setRoomId(rs.getInt("room_id"));
+                roomDetails.setHotelId(rs.getInt("hotel_id"));
+                roomDetails.setRoomType(rs.getString("room_type"));
+                roomDetails.setBedCount(rs.getInt("bed_count"));
+                roomDetails.setSquareMeters(rs.getInt("square_meters"));
+                roomDetails.setStock(rs.getInt("stock"));
+                roomDetails.setAdultPrice(rs.getDouble("adult_price"));
+                roomDetails.setChildPrice(rs.getDouble("child_price"));
+
+                // Özellikleri liste olarak parse et
+                Array featuresArray = rs.getArray("features");
+                if (featuresArray != null) {
+                    String[] features = (String[]) featuresArray.getArray();
+                    roomDetails.setRoomFeatures(Arrays.asList(features));
+                }
+
+                roomDetailsList.add(roomDetails);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return roomDetailsList;
     }
 
 

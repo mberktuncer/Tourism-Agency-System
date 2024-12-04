@@ -5,6 +5,7 @@ import main.helper.GUIHelper;
 import main.model.hotel.FacilityFeatures;
 import main.model.hotel.Hotel;
 import main.model.room.Room;
+import main.model.room.RoomDetails;
 import main.model.room.RoomPrice;
 import main.service.HotelService;
 import main.service.RoomPriceService;
@@ -41,7 +42,8 @@ public class StaffGUI extends JFrame{
         setHotelTable();
         setRoomTable();
         loadHotelModel(HotelService.listAll());
-        loadRoomModel(RoomService.listAll());
+        loadRoomModel(RoomService.listAllDetails());
+
 
         initializeEvents();
 
@@ -69,9 +71,11 @@ public class StaffGUI extends JFrame{
         tbl_hotel_list.getColumnModel().getColumn(4).setMaxWidth(150);
     }
 
-    private void setRoomTable(){
-
-        String[] columnRoomList = {"Id", "Hotel Id", "Room Type", "Bed Count", "Square Meters", "Stock", "Adult Price", "Child Price"};
+    private void setRoomTable() {
+        String[] columnRoomList = {
+                "Id", "Hotel Id", "Room Type", "Bed Count", "Square Meters",
+                "Stock", "Adult Price", "Child Price", "Features"
+        };
         mdl_room_list = GUIHelper.createCustomTableModel(columnRoomList, 0);
         row_room_list = new Object[columnRoomList.length];
 
@@ -80,6 +84,7 @@ public class StaffGUI extends JFrame{
         tbl_room_list.getColumnModel().getColumn(0).setMaxWidth(40);
         tbl_room_list.getColumnModel().getColumn(1).setMaxWidth(80);
     }
+
 
     private void initializeEvents(){
         btn_logout.addActionListener(e -> {
@@ -105,11 +110,12 @@ public class StaffGUI extends JFrame{
         hotels.forEach(this::addHotelToModel);
     }
 
-    protected void loadRoomModel(ArrayList<Room> rooms){
+    protected void loadRoomModel(ArrayList<RoomDetails> roomDetailsList) {
         DefaultTableModel clearModel = (DefaultTableModel) tbl_room_list.getModel();
         clearModel.setRowCount(0);
-        rooms.forEach(this::addRoomToModel);
+        roomDetailsList.forEach(this::addRoomToModel);
     }
+
 
     private void addHotelToModel(Hotel hotel) {
         DefaultTableModel model = (DefaultTableModel) tbl_hotel_list.getModel();
@@ -126,19 +132,22 @@ public class StaffGUI extends JFrame{
         model.addRow(row);
     }
 
-    private void addRoomToModel(Room room){
+    private void addRoomToModel(RoomDetails roomDetails) {
         DefaultTableModel model = (DefaultTableModel) tbl_room_list.getModel();
         Object[] row = {
-                room.getId(),
-                room.getHotelId(),
-                room.getRoomType(),
-                room.getBedCount(),
-                room.getSquareMeters(),
-                room.getStock(),
-
+                roomDetails.getRoomId(),
+                roomDetails.getHotelId(),
+                roomDetails.getRoomType(),
+                roomDetails.getBedCount(),
+                roomDetails.getSquareMeters(),
+                roomDetails.getStock(),
+                roomDetails.getAdultPrice(),
+                roomDetails.getChildPrice(),
+                String.join(", ", roomDetails.getRoomFeatures()) // Listeyi virgülle birleştir
         };
         model.addRow(row);
     }
+
 
     private String formatEnum(Enum<?> enumValue) {
         String rawName = enumValue.name().toLowerCase().replace("_", " ");

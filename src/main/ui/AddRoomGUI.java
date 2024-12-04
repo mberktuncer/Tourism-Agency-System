@@ -112,7 +112,7 @@ public class AddRoomGUI extends JFrame{
             fld_sqr_meters.setText(null);
             fld_stock.setText(null);
 
-            staffGUI.loadRoomModel(RoomService.listAll());
+            staffGUI.loadRoomModel(RoomService.listAllDetails());
 
         });
 
