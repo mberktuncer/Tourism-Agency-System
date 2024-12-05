@@ -1,6 +1,6 @@
 package main.service;
 
-import main.helper.Config;
+import main.helper.DatabaseConfig;
 import main.model.room.RoomFeatures;
 import main.model.room.RoomFeaturesEnum;
 
@@ -8,7 +8,6 @@ import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class RoomFeaturesService {
@@ -25,7 +24,7 @@ public class RoomFeaturesService {
                 "FROM room r " +
                 "WHERE r.id = ?";
 
-        try (Connection connection = Config.connect()) {
+        try (Connection connection = DatabaseConfig.connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             List<RoomFeaturesEnum> roomFeaturesEnumList = roomFeatures.getRoomFeatures();

@@ -1,6 +1,6 @@
 package main.service;
 
-import main.helper.Config;
+import main.helper.DatabaseConfig;
 import main.helper.GUIHelper;
 import main.model.User;
 
@@ -14,7 +14,7 @@ public class UserService {
         ArrayList<User> users = new ArrayList<>();
         String query = "SELECT * FROM users";
         User user;
-        try(Connection connection = Config.connect()){
+        try(Connection connection = DatabaseConfig.connect()){
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()){
@@ -37,8 +37,8 @@ public class UserService {
         String query = "SELECT * FROM users WHERE id = ?";
         User user = null;
 
-        try (Connection ignored = Config.connect()){
-            PreparedStatement preparedStatement = Config.connect().prepareStatement(query);
+        try (Connection ignored = DatabaseConfig.connect()){
+            PreparedStatement preparedStatement = DatabaseConfig.connect().prepareStatement(query);
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
@@ -62,8 +62,8 @@ public class UserService {
         String query = "SELECT * FROM users WHERE userName = ?";
         User user = null;
 
-        try (Connection ignored = Config.connect()){
-            PreparedStatement preparedStatement = Config.connect().prepareStatement(query);
+        try (Connection connection = DatabaseConfig.connect()){
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, userName);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
@@ -90,7 +90,7 @@ public class UserService {
             return false;
         }
         try{
-            PreparedStatement preparedStatement = Config.connect().prepareStatement(query);
+            PreparedStatement preparedStatement = DatabaseConfig.connect().prepareStatement(query);
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, surname);
             preparedStatement.setString(3, userName);
@@ -111,7 +111,7 @@ public class UserService {
         List<String> roles = new ArrayList<>();
         String query = "SELECT unnest(enum_range(NULL::user_role))";
 
-        try(Connection connection = Config.connect()){
+        try(Connection connection = DatabaseConfig.connect()){
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()){
@@ -129,7 +129,7 @@ public class UserService {
         User user;
         ArrayList<User> users = new ArrayList<>();
 
-        try (Connection connection = Config.connect()){
+        try (Connection connection = DatabaseConfig.connect()){
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, role);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -158,7 +158,7 @@ public class UserService {
             GUIHelper.showMessage("This username has been used before");
             return false;
         }
-        try(Connection connection = Config.connect()){
+        try(Connection connection = DatabaseConfig.connect()){
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.setString(1, name);
@@ -175,8 +175,8 @@ public class UserService {
 
     public static boolean deleteById(int id){
         String query = "DELETE FROM users WHERE id = ?";
-        try(Connection ignored = Config.connect()){
-            PreparedStatement preparedStatement = Config.connect().prepareStatement(query);
+        try(Connection ignored = DatabaseConfig.connect()){
+            PreparedStatement preparedStatement = DatabaseConfig.connect().prepareStatement(query);
             preparedStatement.setInt(1, id);
             return preparedStatement.executeUpdate() == 1;
         }catch (SQLException e){

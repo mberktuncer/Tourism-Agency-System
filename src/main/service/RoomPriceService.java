@@ -1,6 +1,6 @@
 package main.service;
 
-import main.helper.Config;
+import main.helper.DatabaseConfig;
 import main.helper.GUIHelper;
 import main.model.room.RoomPrice;
 
@@ -14,7 +14,7 @@ public class RoomPriceService {
     public static RoomPrice getRoomPriceById(int id){
         String query = "SELECT * FROM room_price WHERE id = ?";
         RoomPrice roomPrice = null;
-        try(Connection connection = Config.connect()){
+        try(Connection connection = DatabaseConfig.connect()){
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -44,7 +44,7 @@ public class RoomPriceService {
             return false;
         }
 
-        try(Connection connection = Config.connect()){
+        try(Connection connection = DatabaseConfig.connect()){
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setDouble(1, roomPrice.getAdultPrice());
             preparedStatement.setDouble(2, roomPrice.getChildPrice());

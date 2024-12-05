@@ -1,6 +1,6 @@
 package main.service;
 
-import main.helper.Config;
+import main.helper.DatabaseConfig;
 import main.helper.GUIHelper;
 import main.model.room.Room;
 import main.model.room.RoomDetails;
@@ -15,7 +15,7 @@ public class RoomService {
         ArrayList<Room> rooms = new ArrayList<>();
         String query = "SELECT * FROM room";
         Room room;
-        try(Connection connection = Config.connect()){
+        try(Connection connection = DatabaseConfig.connect()){
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()){
@@ -38,7 +38,7 @@ public class RoomService {
     public static Room getRoomByRoomTypeHotelId(String roomType, int hotelId){
         String query = "SELECT * FROM room WHERE room_type = ? AND hotel_id = ?";
         Room room = null;
-        try(Connection connection = Config.connect()){
+        try(Connection connection = DatabaseConfig.connect()){
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, roomType);
             preparedStatement.setInt(2, hotelId);
@@ -67,7 +67,7 @@ public class RoomService {
             return false;
         }
 
-        try(Connection connection = Config.connect()){
+        try(Connection connection = DatabaseConfig.connect()){
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.setInt(1, room.getHotelId());
@@ -91,7 +91,7 @@ public class RoomService {
     public static boolean update(Room room){
         String query = "UPDATE room set hotel_id = ?, room_type = ?, bed_count = ?, square_meters = ?, stock = ? " +
                 "WHERE id = ?";
-        try(Connection connection = Config.connect()){
+        try(Connection connection = DatabaseConfig.connect()){
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.setInt(1, room.getHotelId());
@@ -115,7 +115,7 @@ public class RoomService {
                 "LEFT JOIN room_features rf ON r.id = rf.room_id";
 
         ArrayList<RoomDetails> roomDetailsList = new ArrayList<>();
-        try (Connection connection = Config.connect();
+        try (Connection connection = DatabaseConfig.connect();
              PreparedStatement preparedStatement = connection.prepareStatement(query);
              ResultSet rs = preparedStatement.executeQuery()) {
 

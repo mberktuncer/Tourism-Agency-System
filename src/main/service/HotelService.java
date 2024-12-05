@@ -1,6 +1,6 @@
 package main.service;
 
-import main.helper.Config;
+import main.helper.DatabaseConfig;
 import main.helper.GUIHelper;
 import main.model.hotel.BoardingHouseType;
 import main.model.hotel.FacilityFeatures;
@@ -10,7 +10,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class HotelService {
@@ -19,7 +18,7 @@ public class HotelService {
         ArrayList<Hotel> hotels = new ArrayList<>();
         String query = "SELECT * FROM hotel";
         Hotel hotel;
-        try(Connection connection = Config.connect()){
+        try(Connection connection = DatabaseConfig.connect()){
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()){
@@ -55,7 +54,7 @@ public class HotelService {
     public static Hotel getHotelByEmail(String email){
         String query = "SELECT * FROM hotel WHERE email = ?";
         Hotel hotel = null;
-        try(Connection connection = Config.connect()){
+        try(Connection connection = DatabaseConfig.connect()){
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, email);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -97,7 +96,7 @@ public class HotelService {
             return false;
         }
 
-        try (Connection connection = Config.connect()) {
+        try (Connection connection = DatabaseConfig.connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.setString(1, hotel.getName());
@@ -129,7 +128,7 @@ public class HotelService {
     public static boolean update(Hotel hotel) {
         String query = "UPDATE hotel SET name = ?, address = ?, email = ?, phone_number = ?, star = ?, " +
                 "boarding_house_type = ?, facility_features = ? WHERE id = ?";
-        try (Connection connection = Config.connect()) {
+        try (Connection connection = DatabaseConfig.connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.setString(1, hotel.getName());
@@ -165,7 +164,7 @@ public class HotelService {
         String query = "SELECT * FROM hotel WHERE name ILIKE ?";
         ArrayList<Hotel> hotels = new ArrayList<>();
         Hotel hotel;
-        try (Connection connection = Config.connect()){
+        try (Connection connection = DatabaseConfig.connect()){
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, "%" + name + "%");
 
@@ -203,7 +202,7 @@ public class HotelService {
 
     public static boolean deleteById(int id) {
         String query = "DELETE FROM hotel WHERE id = ?";
-        try (Connection connection = Config.connect()) {
+        try (Connection connection = DatabaseConfig.connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.setInt(1, id);
