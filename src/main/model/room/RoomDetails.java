@@ -5,6 +5,7 @@ import java.util.List;
 public class RoomDetails {
     private int roomId;
     private int hotelId;
+    private String hotelName;
     private String roomType;
     private int bedCount;
     private int squareMeters;
@@ -18,6 +19,14 @@ public class RoomDetails {
 
     public int getRoomId() {
         return roomId;
+    }
+
+    public String getHotelName() {
+        return hotelName;
+    }
+
+    public void setHotelName(String hotelName) {
+        this.hotelName = hotelName;
     }
 
     public void setRoomId(int roomId) {

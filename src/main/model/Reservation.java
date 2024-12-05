@@ -24,6 +24,10 @@ public class Reservation {
         this.totalPrice = totalPrice;
     }
 
+    public Reservation(){
+
+    }
+
     public int getId() {
         return id;
     }
@@ -64,7 +68,7 @@ public class Reservation {
         this.customerIdentityNo = customerIdentityNo;
     }
 
-    public Date getCheckinDate() {
+    public String getCheckinDate() {
         return checkinDate;
     }
 
@@ -72,7 +76,7 @@ public class Reservation {
         this.checkinDate = checkinDate;
     }
 
-    public Date getCheckoutDate() {
+    public String getCheckoutDate() {
         return checkoutDate;
     }
 
