@@ -7,7 +7,8 @@ import java.util.Properties;
 
 public class DatabaseConfig {
 
-    public static final String DB_URL = "jdbc:postgresql://localhost:5432/tourismagency";
+    //jdbc:postgresql://localhost:5432/tourismagency
+    public static final String DB_URL = "jdbc:postgresql://localhost:5432/tourismagency?TimeZone=Europe/Istanbul";
     public static final String DB_USER = "postgres";
     public static final String DB_PASSWORD = "postgres";
 

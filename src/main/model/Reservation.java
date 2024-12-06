@@ -68,7 +68,7 @@ public class Reservation {
         this.customerIdentityNo = customerIdentityNo;
     }
 
-    public String getCheckinDate() {
+    public Date getCheckinDate() {
         return checkinDate;
     }
 
@@ -76,7 +76,7 @@ public class Reservation {
         this.checkinDate = checkinDate;
     }
 
-    public String getCheckoutDate() {
+    public Date getCheckoutDate() {
         return checkoutDate;
     }
 

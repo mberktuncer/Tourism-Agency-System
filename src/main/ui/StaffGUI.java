@@ -2,14 +2,18 @@ package main.ui;
 
 import main.helper.Constants;
 import main.helper.GUIHelper;
+import main.model.ResultDetails;
 import main.model.hotel.FacilityFeatures;
 import main.model.hotel.Hotel;
 import main.model.room.RoomDetails;
 import main.service.HotelService;
+import main.service.ReservationService;
 import main.service.RoomService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,12 +34,14 @@ public class StaffGUI extends JFrame{
     private JTextField fld_rs_hotel_name;
     private JTextField fld_rs_city_name;
     private JButton btn_rs_search_button;
-    private JTable tbl_rs_resut_list;
+    private JTable tbl_rs_result_list;
     private JButton btn_make_rs;
     private DefaultTableModel mdl_hotel_list;
     private Object[] row_hotel_list;
     private DefaultTableModel mdl_room_list;
     private Object[] row_room_list;
+    private DefaultTableModel mdl_result_list;
+    private Object[] row_result_list;
 
     public StaffGUI(){
 
@@ -43,11 +49,13 @@ public class StaffGUI extends JFrame{
 
         setHotelTable();
         setRoomTable();
+        setResultTable();
         loadHotelModel(HotelService.listAll());
         loadRoomModel(RoomService.listAllDetails());
 
 
         initializeEvents();
+
 
     }
 
@@ -87,6 +95,18 @@ public class StaffGUI extends JFrame{
         tbl_room_list.getColumnModel().getColumn(1).setMaxWidth(80);
     }
 
+    private void setResultTable(){
+        String[] columnResultList = {
+                "Room ID", "Room Type", "Bed Count", "Stock",
+                "Adult Price", "Child Price", "Hotel Name", "Square Meters"
+        };
+        mdl_result_list = GUIHelper.createCustomTableModel(columnResultList ,0);
+        row_result_list = new Object[columnResultList.length];
+
+        tbl_rs_result_list.setModel(mdl_result_list);
+        tbl_rs_result_list.getTableHeader().setReorderingAllowed(false);
+    }
+
 
     private void initializeEvents(){
         btn_logout.addActionListener(e -> {
@@ -104,6 +124,23 @@ public class StaffGUI extends JFrame{
         addNewRoomButton.addActionListener(e -> {
             AddRoomGUI addRoomGUI = new AddRoomGUI(this);
         });
+        btn_rs_search_button.addActionListener(e -> {
+            String checkInString  = fld_rs_start_date.getText();
+            String checkOutString  = fld_rs_end_date.getText();
+            String hotelName = fld_hotel_name.getText();
+            String cityName = fld_rs_city_name.getText();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            /*LocalDate checkInDate = LocalDate.parse(checkInString, formatter);
+            LocalDate checkOutDate = LocalDate.parse(checkOutString, formatter);
+            List<RoomDetails> roomDetails = ReservationService.searchRooms(cityName, hotelName, checkInDate, checkOutDate);
+            loadRsRoomModel(roomDetails);*/
+            LocalDate checkInDate = LocalDate.parse("01/06/2021", formatter);
+            LocalDate checkOutDate = LocalDate.parse("03/06/2021", formatter);
+
+            ArrayList<ResultDetails> roomDetailsList = ReservationService.searchRooms("Istanbul", "Grand Istanbul Hotel", checkInDate, checkOutDate);
+            loadResultModel(roomDetailsList);
+
+        });
     }
 
     protected void loadHotelModel(ArrayList<Hotel> hotels) {
@@ -117,6 +154,13 @@ public class StaffGUI extends JFrame{
         clearModel.setRowCount(0);
         roomDetailsList.forEach(this::addRoomToModel);
     }
+
+    protected void loadResultModel(ArrayList<ResultDetails> resultDetailsList) {
+        DefaultTableModel clearModel = (DefaultTableModel) tbl_rs_result_list.getModel();
+        clearModel.setRowCount(0); // Tabloyu temizle
+        resultDetailsList.forEach(this::addResultToModel); // Her satırı tabloya ekle
+    }
+
 
 
     private void addHotelToModel(Hotel hotel) {
@@ -149,6 +193,22 @@ public class StaffGUI extends JFrame{
         };
         model.addRow(row);
     }
+
+    private void addResultToModel(ResultDetails resultDetails) {
+        DefaultTableModel model = (DefaultTableModel) tbl_rs_result_list.getModel();
+        Object[] row = {
+                resultDetails.getRoomId(),
+                resultDetails.getRoomType(),
+                resultDetails.getBedCount(),
+                resultDetails.getStock(),
+                resultDetails.getAdultPrice(),
+                resultDetails.getChildPrice(),
+                resultDetails.getHotelName(),
+                resultDetails.getSquareMeters()
+        };
+        model.addRow(row);
+    }
+
 
 
     private String formatEnum(Enum<?> enumValue) {

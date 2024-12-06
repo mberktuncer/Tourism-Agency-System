@@ -2,6 +2,7 @@ package main.service;
 
 import main.helper.DatabaseConfig;
 import main.model.Reservation;
+import main.model.ResultDetails;
 import main.model.room.RoomDetails;
 
 import java.sql.*;
@@ -12,7 +13,7 @@ import java.util.List;
 public class ReservationService {
 
     public static List<Reservation> listAll(){
-        ArrayList<Reservation> reservations = new ArrayList<>();
+         ArrayList<Reservation> reservations = new ArrayList<>();
          String query = "SELECT * FROM reservations";
          Reservation reservation;
          try (Connection connection= DatabaseConfig.connect()){
@@ -35,67 +36,47 @@ public class ReservationService {
          return reservations;
     }
 
-    public static List<RoomDetails> searchRooms(String city, String hotelName, LocalDate checkIn, LocalDate checkOut) {
-        String query = """
-        SELECT 
-            r.id AS room_id,
-            h.name AS hotel_name,
-            r.room_type,
-            rp.adult_price,
-            rp.child_price,
-            r.stock,
-            r.bed_count,
-            r.square_meters
-        FROM 
-            room r
-        JOIN 
-            hotel h ON r.hotel_id = h.id
-        JOIN 
-            room_price rp ON r.id = rp.room_id
-        WHERE 
-            (h.address = ? OR ? IS NULL) AND
-            (h.name = ? OR ? IS NULL) AND
-            EXISTS (
-                SELECT 1 
-                FROM season s 
-                WHERE s.id = rp.season_id 
-                AND s.start_date <= ? AND s.end_date >= ?
-            ) AND 
-            r.stock > 0
-        """;
+    public static ArrayList<ResultDetails> searchRooms(String city, String hotelName, LocalDate checkIn, LocalDate checkOut) {
+        String query = "SELECT r.id AS room_id, r.room_type, r.bed_count, r.stock, rp.adult_price, rp.child_price, h.name AS hotel_name, r.square_meters "
+                + "FROM room r "
+                + "INNER JOIN hotel h ON r.hotel_id = h.id "
+                + "LEFT JOIN room_price rp ON r.id = rp.room_id "
+                + "WHERE r.stock > 0 "
+                + "AND h.address LIKE ? "  // Şehir adı
+                + "AND h.name LIKE ? "     // Otel adı
+                + "AND rp.season_id IN ("
+                + "    SELECT id FROM season WHERE start_date <= ? AND end_date >= ? " // Giriş ve çıkış tarihleri
+                + ");";
 
-        List<RoomDetails> roomDetailsList = new ArrayList<>();
+        ArrayList<ResultDetails> resultList = new ArrayList<>();
 
         try (Connection connection = DatabaseConfig.connect();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-            preparedStatement.setString(1, city);
-            preparedStatement.setString(2, city);
-            preparedStatement.setString(3, hotelName);
-            preparedStatement.setString(4, hotelName);
-            preparedStatement.setDate(5, Date.valueOf(checkIn));
-            preparedStatement.setDate(6, Date.valueOf(checkOut));
+            preparedStatement.setString(1, "%" + city + "%");
+            preparedStatement.setString(2, "%" + hotelName + "%");
+            preparedStatement.setDate(3, Date.valueOf(checkIn));   // Giriş tarihi
+            preparedStatement.setDate(4, Date.valueOf(checkOut));  // Çıkış tarihi
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                RoomDetails roomDetails = new RoomDetails();
-                roomDetails.setRoomId(resultSet.getInt("room_id"));
-                roomDetails.setHotelName(resultSet.getString("hotel_name")); // Otel adı artık çekiliyor
-                roomDetails.setRoomType(resultSet.getString("room_type"));
-                roomDetails.setAdultPrice(resultSet.getDouble("adult_price"));
-                roomDetails.setChildPrice(resultSet.getDouble("child_price"));
-                roomDetails.setStock(resultSet.getInt("stock"));
-                roomDetails.setBedCount(resultSet.getInt("bed_count"));
-                roomDetails.setSquareMeters(resultSet.getInt("square_meters"));
-
-                roomDetailsList.add(roomDetails);
+                resultList.add(new ResultDetails(
+                        resultSet.getInt("room_id"),
+                        resultSet.getString("room_type"),
+                        resultSet.getInt("bed_count"),
+                        resultSet.getInt("stock"),
+                        resultSet.getDouble("adult_price"),
+                        resultSet.getDouble("child_price"),
+                        resultSet.getString("hotel_name"),
+                        resultSet.getDouble("square_meters")
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return roomDetailsList;
+        return resultList;
     }
 
     public static boolean add(Reservation reservation) {
@@ -109,8 +90,8 @@ public class ReservationService {
             preparedStatement.setString(2, reservation.getCustomerName());
             preparedStatement.setString(3, reservation.getCustomerSurname());
             preparedStatement.setString(4, reservation.getCustomerIdentityNo());
-            preparedStatement.setDate(5, Date.valueOf(reservation.getCheckinDate()));
-            preparedStatement.setDate(6, Date.valueOf(reservation.getCheckoutDate()));
+            preparedStatement.setDate(5, new java.sql.Date(reservation.getCheckinDate().getTime()));
+            preparedStatement.setDate(6, new java.sql.Date(reservation.getCheckoutDate().getTime()));
             preparedStatement.setDouble(7, reservation.getTotalPrice());
 
             ResultSet rs = preparedStatement.executeQuery();
