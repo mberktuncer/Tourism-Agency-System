@@ -36,7 +36,8 @@ public class MakeReservationGUI extends JFrame{
     private double totalPrice;
     private RoomDetails roomDetails;
 
-    public MakeReservationGUI(String roomId, String checkIn, String checkOut){
+    public MakeReservationGUI(String roomId, String checkIn, String checkOut, StaffGUI staffGUI){
+        this.staffGUI = staffGUI;
         this.roomId = roomId;
         initializeGUI();
         initializeEvents();
@@ -92,6 +93,7 @@ public class MakeReservationGUI extends JFrame{
                     if (ReservationService.add(reservation)){
                         GUIHelper.showMessage(Constants.MSG_DONE);
                         ReservationService.decreaseRoomStock(reservation.getRoomId());
+                        staffGUI.loadReservationModel(ReservationService.listAll());
                         dispose();
                     }
                     else{

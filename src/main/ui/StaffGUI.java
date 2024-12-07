@@ -218,7 +218,7 @@ public class StaffGUI extends JFrame{
 
         });
         btn_make_rs.addActionListener(e -> {
-            MakeReservationGUI makeReservationGUI = new MakeReservationGUI(selectedRowRoomId, fld_rs_checkin_date.getText(), fld_rs_checkout_date.getText());
+            MakeReservationGUI makeReservationGUI = new MakeReservationGUI(selectedRowRoomId, fld_rs_checkin_date.getText(), fld_rs_checkout_date.getText(), this);
         });
         tbl_reservation_list.getSelectionModel().addListSelectionListener(e -> {
             try{
@@ -264,7 +264,7 @@ public class StaffGUI extends JFrame{
         resultDetailsList.forEach(this::addResultToModel);
     }
 
-    private void loadReservationModel(ArrayList<Reservation> reservations){
+    protected void loadReservationModel(ArrayList<Reservation> reservations){
         DefaultTableModel clearModel = (DefaultTableModel) tbl_reservation_list.getModel();
         clearModel.setRowCount(0);
         reservations.forEach(this::addReservationToModel);
