@@ -31,8 +31,5 @@ public class Main {
         LocalDate checkInDate = LocalDate.parse("01/06/2021", formatter);
         LocalDate checkOutDate = LocalDate.parse("03/06/2021", formatter);
 
-        for (Reservation reservation : ReservationService.listAll()){
-            System.out.println(reservation.toString());
-        }
     }
 }

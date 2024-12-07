@@ -61,7 +61,7 @@ public class MakeReservationGUI extends JFrame{
 
             Room room = RoomService.getRoomById(roomId);
 
-            double totalPrice = ReservationService.calculatePrice(room, numberOfAdult, numberOfChildren, nights);
+            //double totalPrice = ReservationService.calculatePrice(room, numberOfAdult, numberOfChildren, nights);
         });
     }
 
