@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ReservationService {
 
-    public static List<Reservation> listAll(){
+    public static ArrayList<Reservation> listAll(){
          ArrayList<Reservation> reservations = new ArrayList<>();
          String query = "SELECT * FROM reservation";
          Reservation reservation;

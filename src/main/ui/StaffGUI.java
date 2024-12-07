@@ -2,6 +2,7 @@ package main.ui;
 
 import main.helper.Constants;
 import main.helper.GUIHelper;
+import main.model.Reservation;
 import main.model.ResultDetails;
 import main.model.hotel.FacilityFeatures;
 import main.model.hotel.Hotel;
@@ -38,7 +39,7 @@ public class StaffGUI extends JFrame{
     private JButton btn_make_rs;
     private JComboBox cmb_searching_hotel_name;
     private JComboBox cmb_searching_city_name;
-    private JTable table1;
+    private JTable tbl_reservation_list;
     private JTextField fld_reservation_id;
     private JButton deleteButton;
     private DefaultTableModel mdl_hotel_list;
@@ -58,12 +59,12 @@ public class StaffGUI extends JFrame{
         setHotelTable();
         setRoomTable();
         setResultTable();
+        setReservationTable();
         loadHotelModel(HotelService.listAll());
         loadRoomModel(RoomService.listAllDetails());
-
+        loadReservationModel(ReservationService.listAll());
 
         initializeEvents();
-
 
     }
 
@@ -114,6 +115,18 @@ public class StaffGUI extends JFrame{
 
         tbl_rs_result_list.setModel(mdl_result_list);
         tbl_rs_result_list.getTableHeader().setReorderingAllowed(false);
+    }
+
+    private void setReservationTable(){
+        String[] columnReservationList = {
+                "Id", "Room Id", "Customer Name", "Customer Surname", "Customer Identity Number",
+                "Check-In Date", "Check-Out Date", "Total Price"
+        };
+        mdl_reservation_list = GUIHelper.createCustomTableModel(columnReservationList, 0);
+        row_reservation_list = new Object[columnReservationList.length];
+
+        tbl_reservation_list.setModel(mdl_reservation_list);
+        tbl_reservation_list.getTableHeader().setReorderingAllowed(false);
     }
 
 
@@ -182,7 +195,11 @@ public class StaffGUI extends JFrame{
         resultDetailsList.forEach(this::addResultToModel);
     }
 
-
+    private void loadReservationModel(ArrayList<Reservation> reservations){
+        DefaultTableModel clearModel = (DefaultTableModel) tbl_reservation_list.getModel();
+        clearModel.setRowCount(0);
+        reservations.forEach(this::addReservationToModel);
+    }
 
     private void addHotelToModel(Hotel hotel) {
         DefaultTableModel model = (DefaultTableModel) tbl_hotel_list.getModel();
@@ -226,6 +243,21 @@ public class StaffGUI extends JFrame{
                 resultDetails.getChildPrice(),
                 resultDetails.getHotelName(),
                 resultDetails.getSquareMeters()
+        };
+        model.addRow(row);
+    }
+
+    private void addReservationToModel(Reservation reservation){
+        DefaultTableModel model = (DefaultTableModel) tbl_reservation_list.getModel();
+        Object[] row = {
+                reservation.getId(),
+                reservation.getRoomId(),
+                reservation.getCustomerName(),
+                reservation.getCustomerSurname(),
+                reservation.getCustomerIdentityNo(),
+                reservation.getCheckinDate(),
+                reservation.getCheckoutDate(),
+                reservation.getTotalPrice()
         };
         model.addRow(row);
     }

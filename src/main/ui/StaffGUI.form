@@ -254,7 +254,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="db5b7" class="javax.swing.JTable" binding="table1" default-binding="true">
+                  <component id="db5b7" class="javax.swing.JTable" binding="tbl_reservation_list">
                     <constraints/>
                     <properties/>
                   </component>
