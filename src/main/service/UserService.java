@@ -175,8 +175,8 @@ public class UserService {
 
     public static boolean deleteById(int id){
         String query = "DELETE FROM users WHERE id = ?";
-        try(Connection ignored = DatabaseConfig.connect()){
-            PreparedStatement preparedStatement = DatabaseConfig.connect().prepareStatement(query);
+        try(Connection connection = DatabaseConfig.connect()){
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, id);
             return preparedStatement.executeUpdate() == 1;
         }catch (SQLException e){

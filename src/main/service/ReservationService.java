@@ -105,6 +105,46 @@ public class ReservationService {
         return false;
     }
 
+    public static boolean update(Reservation reservation) {
+        String query = "UPDATE reservation " +
+                "SET room_id = ?, customer_name = ?, customer_surname = ?, " +
+                "customer_identity_number = ?, check_in = ?, check_out = ?, total_price = ? " +
+                "WHERE id = ?";
+
+        try (Connection connection = DatabaseConfig.connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, reservation.getRoomId());
+            preparedStatement.setString(2, reservation.getCustomerName());
+            preparedStatement.setString(3, reservation.getCustomerSurname());
+            preparedStatement.setString(4, reservation.getCustomerIdentityNo());
+            preparedStatement.setDate(5, new java.sql.Date(reservation.getCheckinDate().getTime()));
+            preparedStatement.setDate(6, new java.sql.Date(reservation.getCheckoutDate().getTime()));
+            preparedStatement.setDouble(7, reservation.getTotalPrice());
+            preparedStatement.setInt(8, reservation.getId());
+
+            int affectedRows = preparedStatement.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    public static boolean deleteById(int id){
+        String query = "DELETE FROM reservation WHERE id = ?";
+        Reservation reservation = null;
+        try (Connection connection = DatabaseConfig.connect()){
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, id);
+            return preparedStatement.executeUpdate() == 1;
+        }catch (SQLException sqlException){
+            sqlException.printStackTrace();
+        }
+        return false;
+    }
+
     public static void decreaseRoomStock(int roomId) {
         String query = "UPDATE room SET stock = stock - 1 WHERE id = ?";
 

@@ -41,7 +41,7 @@ public class StaffGUI extends JFrame{
     private JComboBox cmb_searching_city_name;
     private JTable tbl_reservation_list;
     private JTextField fld_reservation_id;
-    private JButton deleteButton;
+    private JButton btn_delete_reservation;
     private DefaultTableModel mdl_hotel_list;
     private Object[] row_hotel_list;
     private DefaultTableModel mdl_room_list;
@@ -65,6 +65,7 @@ public class StaffGUI extends JFrame{
         loadReservationModel(ReservationService.listAll());
 
         initializeEvents();
+
 
     }
 
@@ -174,6 +175,30 @@ public class StaffGUI extends JFrame{
         });
         btn_make_rs.addActionListener(e -> {
             MakeReservationGUI makeReservationGUI = new MakeReservationGUI(selectedRowRoomId, fld_rs_start_date.getText(), fld_rs_end_date.getText());
+        });
+        tbl_reservation_list.getSelectionModel().addListSelectionListener(e -> {
+            try{
+                String selectedRowReservationId = tbl_reservation_list.getValueAt(tbl_reservation_list.getSelectedRow(), 0).toString();
+                fld_reservation_id.setText(selectedRowReservationId);
+            }catch (Exception exception){
+                System.out.println(exception.getMessage());
+            }
+        });
+        btn_delete_reservation.addActionListener(e -> {
+            if (GUIHelper.isFieldEmpty(fld_reservation_id)){
+                GUIHelper.showMessage(Constants.MSG_FILL);
+            }
+            else{
+                if (GUIHelper.confirm(Constants.MSG_SURE)){
+                    if (ReservationService.deleteById(Integer.parseInt(fld_reservation_id.getText()))){
+                        GUIHelper.showMessage(Constants.MSG_DONE);
+                        loadReservationModel(ReservationService.listAll());
+                    }
+                    else{
+                        GUIHelper.showMessage(Constants.MSG_ERROR);
+                    }
+                }
+            }
         });
     }
 
