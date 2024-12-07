@@ -35,6 +35,29 @@ public class RoomService {
         return rooms;
     }
 
+    public static Room getRoomById(int id){
+        String query = "SELECT * FROM room WHERE id = ?";
+        Room room = null;
+        try(Connection connection = DatabaseConfig.connect()){
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                room = new Room();
+                room.setId(resultSet.getInt("id"));
+                room.setHotelId(resultSet.getInt("hotel_id"));
+                room.setRoomType(resultSet.getString("room_type"));
+                room.setBedCount(resultSet.getInt("bed_count"));
+                room.setSquareMeters(resultSet.getInt("square_meters"));
+                room.setStock(resultSet.getInt("stock"));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return room;
+
+    }
+
     public static Room getRoomByRoomTypeHotelId(String roomType, int hotelId){
         String query = "SELECT * FROM room WHERE room_type = ? AND hotel_id = ?";
         Room room = null;
@@ -130,7 +153,6 @@ public class RoomService {
                 roomDetails.setAdultPrice(rs.getDouble("adult_price"));
                 roomDetails.setChildPrice(rs.getDouble("child_price"));
 
-                // Özellikleri liste olarak parse et
                 Array featuresArray = rs.getArray("features");
                 if (featuresArray != null) {
                     String[] features = (String[]) featuresArray.getArray();

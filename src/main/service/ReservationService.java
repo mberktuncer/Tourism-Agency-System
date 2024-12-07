@@ -120,7 +120,7 @@ public class ReservationService {
 
 
 
-    public static double calculatePrice(RoomDetails room, int adults, int children, int nights) {
+    public static double calculatePrice(RoomDetails room, double adults, double children, double nights) {
         double adultPrice = room.getAdultPrice();
         double childPrice = room.getChildPrice();
         return (adults * adultPrice + children * childPrice) * nights;

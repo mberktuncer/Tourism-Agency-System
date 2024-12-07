@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class MakeReservationGUI extends JFrame{
     private JPanel panel1;
@@ -55,8 +56,12 @@ public class MakeReservationGUI extends JFrame{
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             LocalDate checkInDate = LocalDate.parse(checkInString, formatter);
             LocalDate checkOutDate = LocalDate.parse(checkOutString, formatter);
+            int nights = (int) ChronoUnit.DAYS.between(checkInDate, checkOutDate);
 
 
+            Room room = RoomService.getRoomById(roomId);
+
+            double totalPrice = ReservationService.calculatePrice(room, numberOfAdult, numberOfChildren, nights);
         });
     }
 
