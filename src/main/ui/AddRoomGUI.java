@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddRoomGUI extends JFrame{
+    private JPanel panel1;
     private JPanel wrapper;
     private JTextField fld_hotel_id;
     private JTextField fld_bed_count;
