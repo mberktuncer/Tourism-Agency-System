@@ -2,7 +2,6 @@ package main.ui;
 
 import main.helper.Constants;
 import main.helper.GUIHelper;
-import main.model.Reservation;
 import main.model.ResultDetails;
 import main.model.hotel.FacilityFeatures;
 import main.model.hotel.Hotel;
@@ -13,12 +12,11 @@ import main.service.RoomService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class StaffGUI extends JFrame{
@@ -32,19 +30,26 @@ public class StaffGUI extends JFrame{
     private JButton btn_add_hotel;
     private JButton addNewRoomButton;
     private JTable tbl_room_list;
-    private JTextField fld_rs_start_date;
-    private JTextField fld_rs_end_date;
-    private JTextField fld_rs_hotel_name;
-    private JTextField fld_rs_city_name;
+    protected JTextField fld_rs_start_date;
+    protected JTextField fld_rs_end_date;
+    protected JTextField fld_rs_city_name;
     private JButton btn_rs_search_button;
     private JTable tbl_rs_result_list;
     private JButton btn_make_rs;
+    private JComboBox cmb_searching_hotel_name;
+    private JComboBox cmb_searching_city_name;
+    private JTable table1;
+    private JTextField fld_reservation_id;
+    private JButton deleteButton;
     private DefaultTableModel mdl_hotel_list;
     private Object[] row_hotel_list;
     private DefaultTableModel mdl_room_list;
     private Object[] row_room_list;
     private DefaultTableModel mdl_result_list;
     private Object[] row_result_list;
+    private String selectedRowRoomId;
+    private DefaultTableModel mdl_reservation_list;
+    private Object[] row_reservation_list;
 
     public StaffGUI(){
 
@@ -60,7 +65,6 @@ public class StaffGUI extends JFrame{
         initializeEvents();
 
 
-
     }
 
     private void initializeGUI() {
@@ -71,6 +75,7 @@ public class StaffGUI extends JFrame{
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setTitle(Constants.WINDOW_TITLE);
         setVisible(true);
+        populateHotelsAndCities();
     }
 
     private void setHotelTable(){
@@ -129,21 +134,33 @@ public class StaffGUI extends JFrame{
             AddRoomGUI addRoomGUI = new AddRoomGUI(this);
         });
         btn_rs_search_button.addActionListener(e -> {
-            String checkInString  = fld_rs_start_date.getText();
-            String checkOutString  = fld_rs_end_date.getText();
-            String hotelName = fld_hotel_name.getText();
-            String cityName = fld_rs_city_name.getText();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            LocalDate checkInDate = LocalDate.parse(checkInString, formatter);
-            LocalDate checkOutDate = LocalDate.parse(checkOutString, formatter);
-            ArrayList<ResultDetails> roomDetailsList = ReservationService.searchRooms(hotelName, cityName, checkInDate, checkOutDate);
+            if (GUIHelper.isFieldEmpty(fld_rs_start_date) || GUIHelper.isFieldEmpty(fld_rs_end_date)){
+                GUIHelper.showMessage("Please fill CheckIn and CheckOut dates");
+            }
+            else{
+                String checkInString  = fld_rs_start_date.getText();
+                String checkOutString  = fld_rs_end_date.getText();
+                String hotelName = Objects.requireNonNull(cmb_searching_hotel_name.getSelectedItem()).toString();
+                String cityName = Objects.requireNonNull(cmb_searching_city_name.getSelectedItem()).toString();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDate checkInDate = LocalDate.parse(checkInString, formatter);
+                LocalDate checkOutDate = LocalDate.parse(checkOutString, formatter);
+                ArrayList<ResultDetails> roomDetailsList = ReservationService.searchRooms(cityName, hotelName, checkInDate, checkOutDate);
 
-            loadResultModel(roomDetailsList);
+                loadResultModel(roomDetailsList);
+            }
+
 
         });
+        tbl_rs_result_list.getSelectionModel().addListSelectionListener(e -> {
+            try {
+                selectedRowRoomId = tbl_rs_result_list.getValueAt(tbl_rs_result_list.getSelectedRow(), 0).toString();
+            }catch (Exception exception){
+                System.out.println(exception.getMessage());
+            }
+        });
         btn_make_rs.addActionListener(e -> {
-
-            MakeReservationGUI makeReservationGUI = new MakeReservationGUI();
+            MakeReservationGUI makeReservationGUI = new MakeReservationGUI(selectedRowRoomId, fld_rs_start_date.getText(), fld_rs_end_date.getText());
         });
     }
 
@@ -213,6 +230,17 @@ public class StaffGUI extends JFrame{
         model.addRow(row);
     }
 
+    private void populateHotelsAndCities(){
+        cmb_searching_hotel_name.addItem("");
+        cmb_searching_city_name.addItem("");
+        ArrayList<Hotel> hotels = HotelService.listAll();
+        String cityName = null;
+        for (Hotel hotel : hotels){
+            cmb_searching_hotel_name.addItem(hotel.getName());
+            cityName = hotel.getAddress().split(",")[0];
+            cmb_searching_city_name.addItem(cityName);
+        }
+    }
 
 
     private String formatEnum(Enum<?> enumValue) {

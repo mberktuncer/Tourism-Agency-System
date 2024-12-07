@@ -18,7 +18,6 @@ import java.time.temporal.ChronoUnit;
 public class MakeReservationGUI extends JFrame{
     private JPanel panel1;
     private JPanel wrapper;
-    private JTextField fld_room_id;
     private JTextField fld_customer_name;
     private JTextField fld_customer_surname;
     private JTextField fld_customer_id_no;
@@ -28,10 +27,15 @@ public class MakeReservationGUI extends JFrame{
     private JTextField fld_number_of_child;
     private JTextField fld_total_price;
     private JButton btn_make_reservation;
+    private StaffGUI staffGUI;
+    private String roomId;
 
-    public MakeReservationGUI(){
+    public MakeReservationGUI(String roomId, String checkIn, String checkOut){
+        this.roomId = roomId;
         initializeGUI();
         initializeEvents();
+        fld_check_in.setText(checkIn);
+        fld_check_out.setText(checkOut);
     }
 
     public void initializeGUI(){
@@ -47,7 +51,6 @@ public class MakeReservationGUI extends JFrame{
 
     public void initializeEvents(){
         btn_make_reservation.addActionListener(e -> {
-            int roomId = Integer.parseInt(fld_room_id.getText());
             String customerName = fld_customer_name.getText();
             String customerSurname = fld_customer_surname.getText();
             String customerIdentityNumber = fld_customer_id_no.getText();
@@ -60,11 +63,11 @@ public class MakeReservationGUI extends JFrame{
             LocalDate checkOutDate = LocalDate.parse(checkOutString, formatter);
             int nights = (int) ChronoUnit.DAYS.between(checkInDate, checkOutDate);
 
-            RoomDetails roomDetails = RoomService.getRoomDetailsById(roomId);
+            RoomDetails roomDetails = RoomService.getRoomDetailsById(Integer.parseInt(roomId));
             double totalPrice = ReservationService.calculatePrice(roomDetails, numberOfAdult, numberOfChildren, nights);
 
             Reservation reservation = new Reservation();
-            reservation.setRoomId(roomId);
+            reservation.setRoomId(Integer.parseInt(roomId));
             reservation.setCustomerName(customerName);
             reservation.setCustomerSurname(customerSurname);
             reservation.setCustomerIdentityNo(customerIdentityNumber);
@@ -80,6 +83,7 @@ public class MakeReservationGUI extends JFrame{
                 if (GUIHelper.confirm(Constants.MSG_SURE)){
                     if (ReservationService.add(reservation)){
                         GUIHelper.showMessage(Constants.MSG_DONE);
+                        ReservationService.decreaseRoomStock(reservation.getRoomId());
                     }
                     else{
                         GUIHelper.showMessage(Constants.MSG_ERROR);
@@ -89,8 +93,4 @@ public class MakeReservationGUI extends JFrame{
         });
     }
 
-    public static void main(String[] args) {
-        GUIHelper.setLookAndFeel();
-        MakeReservationGUI makeReservationGUI = new MakeReservationGUI();
-    }
 }

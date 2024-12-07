@@ -45,7 +45,7 @@ public class ReservationService {
                 + "AND h.address LIKE ? "
                 + "AND h.name LIKE ? "
                 + "AND rp.season_id IN ("
-                + "    SELECT id FROM season WHERE start_date <= ? AND end_date >= ? " // Giriş ve çıkış tarihleri
+                + "    SELECT id FROM season WHERE start_date <= ? AND end_date >= ? "
                 + ");";
 
         ArrayList<ResultDetails> resultList = new ArrayList<>();
