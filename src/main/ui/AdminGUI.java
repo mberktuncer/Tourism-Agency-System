@@ -81,7 +81,7 @@ public class AdminGUI extends JFrame {
         setSize(1000, 500);
         GUIHelper.centerFrame(this);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setTitle(Constants.WINDOW_TITLE);
+        setTitle(Constants.WINDOW_TITLE_ADMIN);
         populateRoles();
         setVisible(true);
     }
@@ -173,11 +173,4 @@ public class AdminGUI extends JFrame {
         }
     }
 
-
-    public static void main(String[] args) {
-
-        GUIHelper.setLookAndFeel();
-        AdminGUI adminGUI = new AdminGUI();
-
-    }
 }

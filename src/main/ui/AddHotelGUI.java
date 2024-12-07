@@ -43,7 +43,7 @@ public class AddHotelGUI extends JFrame{
         setSize(500, 400);
         GUIHelper.centerFrame(this);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setTitle(Constants.WINDOW_TITLE);
+        setTitle(Constants.WINDOW_TITLE_STAFF);
         setVisible(true);
 
         for (BoardingHouseType type : BoardingHouseType.values()){

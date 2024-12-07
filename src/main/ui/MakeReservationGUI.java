@@ -44,7 +44,7 @@ public class MakeReservationGUI extends JFrame{
         setSize(400, 400);
         GUIHelper.centerFrame(this);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setTitle(Constants.WINDOW_TITLE);
+        setTitle(Constants.WINDOW_TITLE_STAFF);
         setVisible(true);
     }
 

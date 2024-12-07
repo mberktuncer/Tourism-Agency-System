@@ -27,7 +27,7 @@ public class LoginGUI extends JFrame{
         setSize(400, 400);
         GUIHelper.centerFrame(this);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setTitle("Patika Tourism Agency Login Pannel");
+        setTitle(Constants.WINDOW_TITLE_LOGIN);
         setVisible(true);
     }
 

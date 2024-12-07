@@ -49,7 +49,7 @@ public class AddRoomGUI extends JFrame{
         setSize(600, 500);
         GUIHelper.centerFrame(this);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setTitle(Constants.WINDOW_TITLE);
+        setTitle(Constants.WINDOW_TITLE_STAFF);
         setVisible(true);
     }
 

@@ -1,7 +1,9 @@
 package main.helper;
 
 public class Constants {
-    public static final String WINDOW_TITLE = "Tourism Agency System";
+    public static final String WINDOW_TITLE_LOGIN = "Tourism Agency System Login Screen";
+    public static final String WINDOW_TITLE_ADMIN = "Tourism Agency System Admin Screen";
+    public static final String WINDOW_TITLE_STAFF = "Tourism Agency System Staff Screen";
     public static final String MSG_FILL = "Please fill in all fields";
     public static final String MSG_DONE = "Transaction successful";
     public static final String MSG_ERROR = "An error occurred";

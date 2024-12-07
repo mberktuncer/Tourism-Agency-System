@@ -79,7 +79,7 @@ public class StaffGUI extends JFrame{
         setSize(1500, 500);
         GUIHelper.centerFrame(this);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setTitle(Constants.WINDOW_TITLE);
+        setTitle(Constants.WINDOW_TITLE_STAFF);
         setVisible(true);
         populateHotelsAndCities();
         fld_rs_checkin_date.setText("dd/mm/yyyy");
@@ -359,11 +359,4 @@ public class StaffGUI extends JFrame{
                 .collect(Collectors.joining(", "));
     }
 
-
-    public static void main(String[] args) {
-        GUIHelper.setLookAndFeel();
-        StaffGUI staffGUI = new StaffGUI();
-
-
-    }
 }
