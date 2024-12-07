@@ -1,6 +1,7 @@
 package main;
 
 
+import main.model.Reservation;
 import main.model.ResultDetails;
 import main.model.User;
 import main.model.hotel.BoardingHouseType;
@@ -30,10 +31,8 @@ public class Main {
         LocalDate checkInDate = LocalDate.parse("01/06/2021", formatter);
         LocalDate checkOutDate = LocalDate.parse("03/06/2021", formatter);
 
-        List<ResultDetails> resultList = ReservationService.searchRooms("Istanbul", "Grand Istanbul Hotel", checkInDate, checkOutDate);
-
-        for (ResultDetails resultDetails : resultList){
-            System.out.println(resultDetails.toString());
+        for (Reservation reservation : ReservationService.listAll()){
+            System.out.println(reservation.toString());
         }
     }
 }

@@ -2,6 +2,7 @@ package main.ui;
 
 import main.helper.Constants;
 import main.helper.GUIHelper;
+import main.model.Reservation;
 import main.model.ResultDetails;
 import main.model.hotel.FacilityFeatures;
 import main.model.hotel.Hotel;
@@ -12,6 +13,8 @@ import main.service.RoomService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -55,6 +58,7 @@ public class StaffGUI extends JFrame{
 
 
         initializeEvents();
+
 
 
     }
@@ -130,15 +134,15 @@ public class StaffGUI extends JFrame{
             String hotelName = fld_hotel_name.getText();
             String cityName = fld_rs_city_name.getText();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            /*LocalDate checkInDate = LocalDate.parse(checkInString, formatter);
+            LocalDate checkInDate = LocalDate.parse(checkInString, formatter);
             LocalDate checkOutDate = LocalDate.parse(checkOutString, formatter);
-            List<RoomDetails> roomDetails = ReservationService.searchRooms(cityName, hotelName, checkInDate, checkOutDate);
-            loadRsRoomModel(roomDetails);*/
-            LocalDate checkInDate = LocalDate.parse("01/06/2021", formatter);
-            LocalDate checkOutDate = LocalDate.parse("03/06/2021", formatter);
+            ArrayList<ResultDetails> roomDetailsList = ReservationService.searchRooms(hotelName, cityName, checkInDate, checkOutDate);
 
-            ArrayList<ResultDetails> roomDetailsList = ReservationService.searchRooms("Istanbul", "Grand Istanbul Hotel", checkInDate, checkOutDate);
             loadResultModel(roomDetailsList);
+
+        });
+        btn_make_rs.addActionListener(e -> {
+
 
         });
     }
@@ -157,8 +161,8 @@ public class StaffGUI extends JFrame{
 
     protected void loadResultModel(ArrayList<ResultDetails> resultDetailsList) {
         DefaultTableModel clearModel = (DefaultTableModel) tbl_rs_result_list.getModel();
-        clearModel.setRowCount(0); // Tabloyu temizle
-        resultDetailsList.forEach(this::addResultToModel); // Her satırı tabloya ekle
+        clearModel.setRowCount(0);
+        resultDetailsList.forEach(this::addResultToModel);
     }
 
 

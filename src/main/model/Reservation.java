@@ -28,6 +28,20 @@ public class Reservation {
 
     }
 
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id=" + id +
+                ", roomId=" + roomId +
+                ", customerName='" + customerName + '\'' +
+                ", customerSurname='" + customerSurname + '\'' +
+                ", customerIdentityNo='" + customerIdentityNo + '\'' +
+                ", checkinDate=" + checkinDate +
+                ", checkoutDate=" + checkoutDate +
+                ", totalPrice=" + totalPrice +
+                '}';
+    }
+
     public int getId() {
         return id;
     }

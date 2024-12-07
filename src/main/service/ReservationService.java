@@ -14,7 +14,7 @@ public class ReservationService {
 
     public static List<Reservation> listAll(){
          ArrayList<Reservation> reservations = new ArrayList<>();
-         String query = "SELECT * FROM reservations";
+         String query = "SELECT * FROM reservation";
          Reservation reservation;
          try (Connection connection= DatabaseConfig.connect()){
              Statement statement = connection.createStatement();
@@ -42,8 +42,8 @@ public class ReservationService {
                 + "INNER JOIN hotel h ON r.hotel_id = h.id "
                 + "LEFT JOIN room_price rp ON r.id = rp.room_id "
                 + "WHERE r.stock > 0 "
-                + "AND h.address LIKE ? "  // Şehir adı
-                + "AND h.name LIKE ? "     // Otel adı
+                + "AND h.address LIKE ? "
+                + "AND h.name LIKE ? "
                 + "AND rp.season_id IN ("
                 + "    SELECT id FROM season WHERE start_date <= ? AND end_date >= ? " // Giriş ve çıkış tarihleri
                 + ");";
@@ -55,8 +55,8 @@ public class ReservationService {
 
             preparedStatement.setString(1, "%" + city + "%");
             preparedStatement.setString(2, "%" + hotelName + "%");
-            preparedStatement.setDate(3, Date.valueOf(checkIn));   // Giriş tarihi
-            preparedStatement.setDate(4, Date.valueOf(checkOut));  // Çıkış tarihi
+            preparedStatement.setDate(3, Date.valueOf(checkIn));
+            preparedStatement.setDate(4, Date.valueOf(checkOut));
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
