@@ -143,7 +143,7 @@ public class StaffGUI extends JFrame{
         });
         btn_make_rs.addActionListener(e -> {
 
-
+            MakeReservationGUI makeReservationGUI = new MakeReservationGUI();
         });
     }
 

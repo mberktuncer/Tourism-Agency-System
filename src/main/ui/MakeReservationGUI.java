@@ -2,7 +2,9 @@ package main.ui;
 
 import main.helper.Constants;
 import main.helper.GUIHelper;
+import main.model.Reservation;
 import main.model.room.Room;
+import main.model.room.RoomDetails;
 import main.service.ReservationService;
 import main.service.RoomService;
 
@@ -58,10 +60,32 @@ public class MakeReservationGUI extends JFrame{
             LocalDate checkOutDate = LocalDate.parse(checkOutString, formatter);
             int nights = (int) ChronoUnit.DAYS.between(checkInDate, checkOutDate);
 
+            RoomDetails roomDetails = RoomService.getRoomDetailsById(roomId);
+            double totalPrice = ReservationService.calculatePrice(roomDetails, numberOfAdult, numberOfChildren, nights);
 
-            Room room = RoomService.getRoomById(roomId);
+            Reservation reservation = new Reservation();
+            reservation.setRoomId(roomId);
+            reservation.setCustomerName(customerName);
+            reservation.setCustomerSurname(customerSurname);
+            reservation.setCustomerIdentityNo(customerIdentityNumber);
+            reservation.setCheckinDate(java.sql.Date.valueOf(checkInDate));
+            reservation.setCheckoutDate(java.sql.Date.valueOf(checkOutDate));
+            reservation.setTotalPrice(totalPrice);
 
-            //double totalPrice = ReservationService.calculatePrice(room, numberOfAdult, numberOfChildren, nights);
+            if (GUIHelper.isFieldEmpty(fld_customer_name) || GUIHelper.isFieldEmpty(fld_customer_surname)
+            || GUIHelper.isFieldEmpty(fld_customer_id_no) || GUIHelper.isFieldEmpty(fld_number_of_adult)){
+                GUIHelper.showMessage(Constants.MSG_FILL);
+            }
+            else{
+                if (GUIHelper.confirm(Constants.MSG_SURE)){
+                    if (ReservationService.add(reservation)){
+                        GUIHelper.showMessage(Constants.MSG_DONE);
+                    }
+                    else{
+                        GUIHelper.showMessage(Constants.MSG_ERROR);
+                    }
+                }
+            }
         });
     }
 
