@@ -3,7 +3,6 @@ package main.model;
 import java.util.Date;
 
 public class Reservation {
-
     private int id;
     private int roomId;
     private String customerName;
@@ -24,23 +23,7 @@ public class Reservation {
         this.totalPrice = totalPrice;
     }
 
-    public Reservation(){
-
-    }
-
-    @Override
-    public String toString() {
-        return "Reservation{" +
-                "id=" + id +
-                ", roomId=" + roomId +
-                ", customerName='" + customerName + '\'' +
-                ", customerSurname='" + customerSurname + '\'' +
-                ", customerIdentityNo='" + customerIdentityNo + '\'' +
-                ", checkinDate=" + checkinDate +
-                ", checkoutDate=" + checkoutDate +
-                ", totalPrice=" + totalPrice +
-                '}';
-    }
+    public Reservation(){}
 
     public int getId() {
         return id;
@@ -104,5 +87,19 @@ public class Reservation {
 
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id=" + id +
+                ", roomId=" + roomId +
+                ", customerName='" + customerName + '\'' +
+                ", customerSurname='" + customerSurname + '\'' +
+                ", customerIdentityNo='" + customerIdentityNo + '\'' +
+                ", checkinDate=" + checkinDate +
+                ", checkoutDate=" + checkoutDate +
+                ", totalPrice=" + totalPrice +
+                '}';
     }
 }

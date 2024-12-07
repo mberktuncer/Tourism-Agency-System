@@ -1,7 +1,6 @@
 package main.model.hotel;
 
 import java.util.List;
-import java.util.Set;
 
 public class Hotel {
     private int id;
@@ -24,9 +23,7 @@ public class Hotel {
         this.facilityFeatures = facilityFeatures;
     }
 
-    public Hotel(){
-
-    }
+    public Hotel(){}
 
     public int getId() {
         return id;

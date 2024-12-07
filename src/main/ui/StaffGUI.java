@@ -56,7 +56,6 @@ public class StaffGUI extends JFrame{
     private Object[] row_reservation_list;
 
     public StaffGUI(){
-
         initializeGUI();
 
         setHotelTable();
@@ -68,9 +67,6 @@ public class StaffGUI extends JFrame{
         loadReservationModel(ReservationService.listAll());
 
         initializeEvents();
-
-
-
     }
 
     private void initializeGUI() {

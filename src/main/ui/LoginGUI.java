@@ -58,7 +58,6 @@ public class LoginGUI extends JFrame{
                     }
                 }
                 Arrays.fill(inputPassword, '\0');
-
             }
         });
     }

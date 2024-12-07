@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddRoomGUI extends JFrame{
-    private JPanel panel1;
     private JPanel wrapper;
     private JTextField fld_hotel_id;
     private JTextField fld_bed_count;
@@ -91,8 +90,6 @@ public class AddRoomGUI extends JFrame{
                     selectedRoomFeatures.add(RoomFeaturesEnum.PROJECTOR);
                 }
 
-
-
                 if (GUIHelper.confirm(Constants.MSG_SURE)){
                     if (RoomService.add(room)){
                         GUIHelper.showMessage(Constants.MSG_DONE);
@@ -104,7 +101,6 @@ public class AddRoomGUI extends JFrame{
                         GUIHelper.showMessage(Constants.MSG_ERROR);
                     }
                 }
-
             }
 
             fld_hotel_id.setText(null);
@@ -113,7 +109,6 @@ public class AddRoomGUI extends JFrame{
             fld_stock.setText(null);
 
             staffGUI.loadRoomModel(RoomService.listAllDetails());
-
         });
 
         setPriceForSelectedButton.addActionListener(e -> {
@@ -145,8 +140,6 @@ public class AddRoomGUI extends JFrame{
                 fld_child_price.setText(null);
 
             }
-
         });
     }
-
 }

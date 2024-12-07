@@ -78,9 +78,7 @@ public class UserService {
         }catch (SQLException e){
             e.printStackTrace();
         }
-
         return user;
-
     }
 
     public static boolean add(String name, String surname, String userName, String password, String role){
@@ -103,7 +101,6 @@ public class UserService {
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }
-
         return false;
     }
 
@@ -146,9 +143,7 @@ public class UserService {
         }catch (SQLException e){
             e.printStackTrace();
         }
-
         return users;
-
     }
 
     public static boolean update(int id, String name, String surname, String userName, String role){
@@ -184,6 +179,4 @@ public class UserService {
         }
         return false;
     }
-
-
 }

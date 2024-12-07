@@ -55,7 +55,6 @@ public class RoomService {
             e.printStackTrace();
         }
         return room;
-
     }
 
     public static Room getRoomByRoomTypeHotelId(String roomType, int hotelId){
@@ -204,7 +203,4 @@ public class RoomService {
         }
         return roomDetails;
     }
-
-
-
 }

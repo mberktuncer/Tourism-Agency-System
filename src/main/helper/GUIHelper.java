@@ -32,9 +32,6 @@ public class GUIHelper {
         };
     }
 
-
-
-
     public static boolean isFieldEmpty(JTextField jTextField){
         return jTextField.getText().trim().isEmpty();
     }

@@ -47,7 +47,4 @@ public class RoomFeaturesService {
         return false;
     }
 
-
-
-
 }

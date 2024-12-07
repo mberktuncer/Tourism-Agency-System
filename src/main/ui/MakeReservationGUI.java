@@ -16,7 +16,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 public class MakeReservationGUI extends JFrame{
-    private JPanel panel1;
     private JPanel wrapper;
     private JTextField fld_customer_name;
     private JTextField fld_customer_surname;

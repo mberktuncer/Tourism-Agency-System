@@ -1,7 +1,6 @@
 package main.model;
 
 public class ResultDetails {
-
     private int roomId;
     private String roomType;
     private int bedCount;
@@ -10,7 +9,6 @@ public class ResultDetails {
     private double childPrice;
     private String hotelName;
     private double squareMeters;
-
 
     public ResultDetails(int roomId, String roomType, int bedCount, int stock, double adultPrice, double childPrice, String hotelName, double squareMeters) {
         this.roomId = roomId;
@@ -23,9 +21,7 @@ public class ResultDetails {
         this.squareMeters = squareMeters;
     }
 
-    public ResultDetails(){
-
-    }
+    public ResultDetails(){}
 
     public int getRoomId() {
         return roomId;

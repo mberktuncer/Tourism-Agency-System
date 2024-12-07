@@ -8,7 +8,6 @@ import main.model.room.RoomDetails;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ReservationService {
 
@@ -131,14 +130,10 @@ public class ReservationService {
         }
     }
 
-
-
     public static double calculatePrice(RoomDetails room, double adults, double children, double nights) {
         double adultPrice = room.getAdultPrice();
         double childPrice = room.getChildPrice();
         return (adults * adultPrice + children * childPrice) * nights;
     }
-
-
 
 }

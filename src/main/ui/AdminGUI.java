@@ -4,16 +4,11 @@ import main.helper.Constants;
 import main.helper.GUIHelper;
 import main.model.User;
 import main.service.UserService;
-import org.w3c.dom.html.HTMLBRElement;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.security.PublicKey;
 import java.util.List;
-import java.util.Objects;
 
 public class AdminGUI extends JFrame {
     private JPanel wrapper;
@@ -36,7 +31,6 @@ public class AdminGUI extends JFrame {
     private Object[] row_user_list;
 
     public AdminGUI() {
-
         GUIHelper.setLookAndFeel();
         initializeGUI();
 
@@ -172,5 +166,4 @@ public class AdminGUI extends JFrame {
             cmb_search_user_role.addItem(role);
         }
     }
-
 }

@@ -197,6 +197,7 @@ public class HotelService {
         }
         return hotels;
     }
+
     public static ArrayList<Hotel> findHotelByHotelName(String name){
         String query = "SELECT * FROM hotel WHERE name ILIKE ?";
         ArrayList<Hotel> hotels = new ArrayList<>();
@@ -250,8 +251,5 @@ public class HotelService {
         }
         return false;
     }
-
-
-
 
 }
