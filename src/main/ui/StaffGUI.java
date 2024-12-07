@@ -156,7 +156,8 @@ public class StaffGUI extends JFrame{
             AddRoomGUI addRoomGUI = new AddRoomGUI(this);
         });
         btn_rs_search_button.addActionListener(e -> {
-            if (GUIHelper.isFieldEmpty(fld_rs_checkin_date) || GUIHelper.isFieldEmpty(fld_rs_checkout_date)){
+            if (GUIHelper.isFieldEmpty(fld_rs_checkin_date) || GUIHelper.isFieldEmpty(fld_rs_checkout_date)
+            || fld_rs_checkin_date.getText().equals("dd/mm/yyyy") || fld_rs_checkout_date.getText().equals("dd/mm/yyyy")){
                 GUIHelper.showMessage("Please fill CheckIn and CheckOut dates");
             }
             else{
