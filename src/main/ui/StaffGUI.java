@@ -13,6 +13,9 @@ import main.service.RoomService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -31,8 +34,8 @@ public class StaffGUI extends JFrame{
     private JButton btn_add_hotel;
     private JButton addNewRoomButton;
     private JTable tbl_room_list;
-    protected JTextField fld_rs_start_date;
-    protected JTextField fld_rs_end_date;
+    protected JTextField fld_rs_checkin_date;
+    protected JTextField fld_rs_checkout_date;
     protected JTextField fld_rs_city_name;
     private JButton btn_rs_search_button;
     private JTable tbl_rs_result_list;
@@ -67,6 +70,7 @@ public class StaffGUI extends JFrame{
         initializeEvents();
 
 
+
     }
 
     private void initializeGUI() {
@@ -78,6 +82,10 @@ public class StaffGUI extends JFrame{
         setTitle(Constants.WINDOW_TITLE);
         setVisible(true);
         populateHotelsAndCities();
+        fld_rs_checkin_date.setText("dd/mm/yyyy");
+        fld_rs_checkin_date.setForeground(Color.GRAY);
+        fld_rs_checkout_date.setText("dd/mm/yyyy");
+        fld_rs_checkout_date.setForeground(Color.GRAY);
     }
 
     private void setHotelTable(){
@@ -137,7 +145,7 @@ public class StaffGUI extends JFrame{
         });
         btn_search_hotel.addActionListener(e -> {
             String name = fld_hotel_name.getText();
-            ArrayList<Hotel> search = HotelService.searchHotel(name);
+            ArrayList<Hotel> search = HotelService.findHotelByHotelName(name);
             loadHotelModel(search);
             System.out.println("Search results size: " + search.size());
         });
@@ -148,12 +156,12 @@ public class StaffGUI extends JFrame{
             AddRoomGUI addRoomGUI = new AddRoomGUI(this);
         });
         btn_rs_search_button.addActionListener(e -> {
-            if (GUIHelper.isFieldEmpty(fld_rs_start_date) || GUIHelper.isFieldEmpty(fld_rs_end_date)){
+            if (GUIHelper.isFieldEmpty(fld_rs_checkin_date) || GUIHelper.isFieldEmpty(fld_rs_checkout_date)){
                 GUIHelper.showMessage("Please fill CheckIn and CheckOut dates");
             }
             else{
-                String checkInString  = fld_rs_start_date.getText();
-                String checkOutString  = fld_rs_end_date.getText();
+                String checkInString  = fld_rs_checkin_date.getText();
+                String checkOutString  = fld_rs_checkout_date.getText();
                 String hotelName = Objects.requireNonNull(cmb_searching_hotel_name.getSelectedItem()).toString();
                 String cityName = Objects.requireNonNull(cmb_searching_city_name.getSelectedItem()).toString();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -163,8 +171,38 @@ public class StaffGUI extends JFrame{
 
                 loadResultModel(roomDetailsList);
             }
-
-
+        });
+        fld_rs_checkin_date.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (fld_rs_checkin_date.getText().equals("dd/mm/yyyy")){
+                    fld_rs_checkin_date.setText("");
+                    fld_rs_checkin_date.setForeground(Color.BLACK);
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (fld_rs_checkin_date.getText().isEmpty()){
+                    fld_rs_checkin_date.setText("dd/mm/yyyy");
+                    fld_rs_checkin_date.setForeground(Color.GRAY);
+                }
+            }
+        });
+        fld_rs_checkout_date.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (fld_rs_checkout_date.getText().equals("dd/mm/yyyy")){
+                    fld_rs_checkout_date.setText("");
+                    fld_rs_checkout_date.setForeground(Color.BLACK);
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (fld_rs_checkout_date.getText().isEmpty()){
+                    fld_rs_checkout_date.setText("dd/mm/yyyy");
+                    fld_rs_checkout_date.setForeground(Color.GRAY);
+                }
+            }
         });
         tbl_rs_result_list.getSelectionModel().addListSelectionListener(e -> {
             try {
@@ -173,8 +211,17 @@ public class StaffGUI extends JFrame{
                 System.out.println(exception.getMessage());
             }
         });
+        cmb_searching_city_name.addActionListener(e -> {
+            String selectedCity = (String) cmb_searching_city_name.getSelectedItem();
+            ArrayList<Hotel> hotelsInCity = HotelService.findHotelByCityName(selectedCity);
+            cmb_searching_hotel_name.removeAllItems();
+            for (Hotel hotel : hotelsInCity){
+                cmb_searching_hotel_name.addItem(hotel.getName());
+            }
+
+        });
         btn_make_rs.addActionListener(e -> {
-            MakeReservationGUI makeReservationGUI = new MakeReservationGUI(selectedRowRoomId, fld_rs_start_date.getText(), fld_rs_end_date.getText());
+            MakeReservationGUI makeReservationGUI = new MakeReservationGUI(selectedRowRoomId, fld_rs_checkin_date.getText(), fld_rs_checkout_date.getText());
         });
         tbl_reservation_list.getSelectionModel().addListSelectionListener(e -> {
             try{

@@ -160,7 +160,44 @@ public class HotelService {
         return false;
     }
 
-    public static ArrayList<Hotel> searchHotel(String name){
+    public static ArrayList<Hotel> findHotelByCityName(String cityName){
+        String query = "SELECT * FROM hotel WHERE address ILIKE ?";
+        ArrayList<Hotel> hotels = new ArrayList<>();
+        Hotel hotel;
+        try(Connection connection = DatabaseConfig.connect()){
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, "%" + cityName + "%");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                hotel = new Hotel();
+                hotel.setId(resultSet.getInt("id"));
+                hotel.setName(resultSet.getString("name"));
+                hotel.setAddress(resultSet.getString("address"));
+                hotel.setEmail(resultSet.getString("email"));
+                hotel.setPhoneNumber(resultSet.getString("phone_number"));
+                hotel.setStar(resultSet.getString("star"));
+                String boardingTypeStr = resultSet.getString("boarding_house_type");
+                if (boardingTypeStr != null){
+                    hotel.setBoardingHouseType(BoardingHouseType.valueOf(boardingTypeStr));
+                }
+
+                Array sqlArray = resultSet.getArray("facility_features");
+                if (sqlArray != null) {
+                    String[] featuresArray = (String[]) sqlArray.getArray();
+                    List<FacilityFeatures> featuresList = Arrays.stream(featuresArray)
+                            .map(FacilityFeatures::valueOf)
+                            .collect(Collectors.toList());
+                    hotel.setFacilityFeatures(featuresList);
+                }
+
+                hotels.add(hotel);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return hotels;
+    }
+    public static ArrayList<Hotel> findHotelByHotelName(String name){
         String query = "SELECT * FROM hotel WHERE name ILIKE ?";
         ArrayList<Hotel> hotels = new ArrayList<>();
         Hotel hotel;
